@@ -1,0 +1,38 @@
+<MainScreen>:
+    MDBoxLayout:
+        padding:25
+        orientation: 'vertical'
+        MDBoxLayout:
+            orientation: 'horizontal'
+            adaptive_height: False
+            md_bg_color: app.theme_cls.primary_color
+            Image:
+                source: root.logo_col
+                size: self.texture_size
+            MDLabel:
+                text: 'MENU PRINCIPAL'
+        MDBoxLayout:
+            orientation: 'horizontal'
+            adaptive_height: False
+            MDLabel:
+                text:'BIENVENIDO'
+        MDBoxLayout:
+            adaptive_height: False
+            MDLabel:
+                text:'WELCOME'
+        MDBoxLayout:
+            spacing: 25
+            adaptive_height: False
+            MDRoundFlatButton:
+                width: 250
+                text: 'Español/Spanish'
+                on_press: app.set_language('es')
+                on_release: app.change_screen('menu_esp')
+            MDRoundFlatButton:
+                text: 'Inglés/English'
+                on_press: app.set_language('en')
+                on_release: app.change_screen('menu_esp')
+
+            Image:
+                source: root.ojos
+                size: self.texture_size
