@@ -5,7 +5,7 @@ from kivy.lang import Builder
 from kivymd.uix.screen import MDScreen
 
 from src.settings import PATH_IMAGENES
-from playsound import playsound
+# from playsound import playsound
 
 Builder.load_file('src/screens/mainScreen.kv')
 
