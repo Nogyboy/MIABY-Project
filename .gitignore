@@ -1,0 +1,14 @@
+#Ignorar Archivos
+*.lock
+*.spec
+
+# Carpetas ignoradas
+build/
+dist/
+
+# Cache de Python
+__pycache__/
+
+
+#
+.idea/
