@@ -1,38 +1,53 @@
-<MainScreen>:
-    MDBoxLayout:
-        padding:25
-        orientation: 'vertical'
-        MDBoxLayout:
-            orientation: 'horizontal'
-            adaptive_height: False
-            md_bg_color: app.theme_cls.primary_color
-            Image:
-                source: root.logo_col
-                size: self.texture_size
-            MDLabel:
-                text: 'MENU PRINCIPAL'
-        MDBoxLayout:
-            orientation: 'horizontal'
-            adaptive_height: False
-            MDLabel:
-                text:'BIENVENIDO'
-        MDBoxLayout:
-            adaptive_height: False
-            MDLabel:
-                text:'WELCOME'
-        MDBoxLayout:
-            spacing: 25
-            adaptive_height: False
-            MDRoundFlatButton:
-                width: 250
-                text: 'Español/Spanish'
-                on_press: app.set_language('es')
-                on_release: app.change_screen('menu_esp')
-            MDRoundFlatButton:
-                text: 'Inglés/English'
-                on_press: app.set_language('en')
-                on_release: app.change_screen('menu_esp')
+#:kivy 1.0
+<GridLayout>
+    canvas.before:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: 'resources\img\logo.png'
+            pos: self.pos
+            size: self.size
 
-            Image:
-                source: root.ojos
-                size: self.texture_size
+
+<MainScreen>:
+    GridLayout:
+        #size_hint: .9, .9
+        pos_hint: {'center_x': .5, 'center_y': .5}
+        rows:1
+        BoxLayout:
+            padding:25
+            orientation: 'vertical'
+            
+            BoxLayout:
+                orientation: 'horizontal'
+                adaptive_height: False
+                #md_bg_color: app.theme_cls.primary_color
+                Image:
+                    source: root.logo_col
+                    size: self.texture_size
+                Label:
+                    text: 'MENU PRINCIPAL'
+            BoxLayout:
+                orientation: 'horizontal'
+                adaptive_height: False
+                Label:
+                    text:'BIENVENIDO'
+            BoxLayout:
+                adaptive_height: False
+                Label:
+                    text:'WELCOME'
+            BoxLayout:
+                spacing: 25
+                adaptive_height: False
+                Button:
+                    width: 250
+                    text: 'Español/Spanish'
+                    on_press: app.set_language('es')
+                    on_release: app.change_screen('menu_esp')
+                Button:
+                    text: 'Inglés/English'
+                    on_press: app.set_language('en')
+                    on_release: app.change_screen('menu_esp')
+
+                Image:
+                    source: root.ojos
+                    size: self.texture_size

@@ -1,26 +1,27 @@
+#:kivy 1.0
 <MenuEsp>:
-    MDBoxLayout:
+    BoxLayout:
         padding:25
         orientation: 'vertical'
-        MDBoxLayout:
+        BoxLayout:
             orientation: 'horizontal'
             adaptive_height: False
-            md_bg_color: app.theme_cls.primary_color
+            #md_bg_color: app.theme_cls.primary_color
             Image:
                 source: root.logo_colegio
                 size: self.texture_size
-            MDLabel:
+            Label:
                 id: titulo
                 text: root.get_data()['titulo_pantalla']
 
-        MDBoxLayout:
+        BoxLayout:
             spacing: 25
             adaptive_height: False
-            MDRoundFlatButton:
+            Button:
                 width: 250
                 text: 'Observar'
                 on_press: app.change_screen('salvaPantallas')
-            MDRoundFlatButton:
+            Button:
                 text: 'Interactuar'
-            MDRoundFlatButton
+            Button:
                 text: 'Aprender'

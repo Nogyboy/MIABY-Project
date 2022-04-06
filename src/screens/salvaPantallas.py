@@ -1,6 +1,6 @@
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
-from kivymd.uix.button import MDFlatButton
+from kivy.uix.button import Button
 
 from src.settings import PATH_VIDEOS
 

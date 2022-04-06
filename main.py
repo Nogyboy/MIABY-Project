@@ -1,7 +1,7 @@
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager
-from kivymd.app import MDApp
+from kivy.app import App
 
 # from kivy.core.window import Window
 # Window.maximize()
@@ -13,9 +13,9 @@ from src.settings.local import langs
 Window.size = (640, 360)
 
 
-class MainApp(MDApp):
+class MainApp(App):
     data_page = {}
-    screen_manager = ScreenManager()
+    sm = ScreenManager()
 
     def __init__(self, **kwargs):
         self.set_language()
@@ -26,14 +26,12 @@ class MainApp(MDApp):
            docstring
         """
 
-        self.theme_cls.primary_palette = 'BlueGray'
+        self.sm.add_widget(SalvaPantalla(name='salvaPantallas'))  # Pantalla 1
+        self.sm.add_widget(MainScreen(name='mainScreen'))  # Pantalla 2
+        self.sm.add_widget(MenuEsp(name='menu_esp'))  # Pantalla 3
 
-        self.screen_manager.add_widget(SalvaPantalla(name='salvaPantallas'))  # Pantalla 1
-        self.screen_manager.add_widget(MainScreen(name='mainScreen'))  # Pantalla 2
-        self.screen_manager.add_widget(MenuEsp(name='menu_esp'))  # Pantalla 3
-
-        self.screen_manager.current = 'mainScreen'
-        return self.screen_manager
+        self.sm.current = 'mainScreen' # Pantalla inicial
+        return self.sm
 
     def on_start(self):
         """
@@ -50,16 +48,16 @@ class MainApp(MDApp):
 
     def refresh(self, screen):
         global page
-        self.screen_manager.clear_widgets(screens=[self.screen_manager.get_screen(screen)])
+        self.sm.clear_widgets(screens=[self.sm.get_screen(screen)])
         if screen == 'menu_esp':
             page = MenuEsp(name='menu_esp')
         elif screen == 'menu_abc':
             page = MenuABC(name='menu_esp')
 
-        self.screen_manager.add_widget(page)
+        self.sm.add_widget(page)
 
     def change_screen(self, dt: str = 'mainScreen'):
-        self.screen_manager.current = dt
+        self.sm.current = dt
         # if screen_manager.current != 'salvaPantallas':
         #     screen_manager.current = 'salvaPantallas'
 
