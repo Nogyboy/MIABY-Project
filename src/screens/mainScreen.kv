@@ -3,7 +3,7 @@
     canvas.before:
         BorderImage:
             border: 10, 10, 10, 10
-            source: 'resources\img\imagenojos.png'
+            source: 'resources\img\inicio_fondo.png'
             pos: self.pos
             size: self.size
 
@@ -16,25 +16,6 @@
         BoxLayout:
             padding:25
             orientation: 'vertical'
-            
-            BoxLayout:
-                orientation: 'horizontal'
-                adaptive_height: False
-                #md_bg_color: app.theme_cls.primary_color
-                Image:
-                    source: root.logo_col
-                    size: self.texture_size
-                Label:
-                    text: 'MENU PRINCIPAL'
-            BoxLayout:
-                orientation: 'horizontal'
-                adaptive_height: False
-                Label:
-                    text:'BIENVENIDO'
-            BoxLayout:
-                adaptive_height: False
-                Label:
-                    text:'WELCOME'
             BoxLayout:
                 spacing: 25
                 adaptive_height: False
@@ -47,7 +28,3 @@
                     text: 'Inglés/English'
                     on_press: app.set_language('en')
                     on_release: app.change_screen('menu_esp')
-
-                Image:
-                    source: root.ojos
-                    size: self.texture_size

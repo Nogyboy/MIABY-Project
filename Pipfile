@@ -7,8 +7,10 @@ name = "pypi"
 kivy = {extras = ["full"], version = "*"}
 kivymd = "*"
 playsound = "*"
+icecream = "*"
 
 [dev-packages]
+autopep8 = "*"
 
 [requires]
 python_version = "3.9"
