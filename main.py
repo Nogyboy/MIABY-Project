@@ -1,8 +1,11 @@
 # App
+from kivy.core.window import Window
 from src.settings.local import langs
 from kivy.clock import Clock
 from kivy.uix.screenmanager import ScreenManager
 from kivy.app import App
+from kivy.properties import (ObjectProperty)
+
 
 # Screens
 from src.screens.inicio import InicioScreen
@@ -19,20 +22,34 @@ BASE_DIR = Path(__file__).resolve().parent
 
 KIVY_CONFIG = str(BASE_DIR.joinpath('miaby.ini'))
 
-IMG_PATH = BASE_DIR.joinpath('resources','img')
+IMG_PATH = BASE_DIR.joinpath('resources', 'img')
 
 Config.read(KIVY_CONFIG)
 
 
 class MIABYApp(App):
-    info_screen = {}
+    info_screen = {}  # Conjunto de palabras según el idioma
     sm = ScreenManager()  # Manejador de Pantallas
-    idioma = "Nulo"
+    language = "Nulo"  # Idioma seleccionado
+    current_option = "español"  # Opción de la pantalla acutal
+
+    inicio_screen = ObjectProperty(None)
+
+    modo_juego_screen = ObjectProperty(None)
+
+    def __init__(self, **kwargs):
+
+        # Definir la escucha del teclado
+        self._keyboard = Window.request_keyboard(
+            self._keyboard_closed, self.sm, 'text')
+        self._keyboard.bind(on_key_down=self._on_keyboard_down)
+
+        super().__init__(**kwargs)
 
     def build_config(self, config):
         """
         Construir un archivo de configuraciones local .ini de la aplicación.
-        
+
         """
         config.setdefaults('kivy', {
             'default_font': "['Roboto', 'data/fonts/Roboto-Regular.ttf', 'data/fonts/Roboto-Italic.ttf', 'data/fonts/Roboto-Bold.ttf', 'data/fonts/Roboto-BoldItalic.ttf']",
@@ -52,68 +69,64 @@ class MIABYApp(App):
 
     def build(self):
         """
-           Construcción de intefaces
+           Construcción de interfaces
             - Inicio
             - Modo de Juego
             - Modo - Observar
             - Modo - Aprender
             - Modo - Practicar
         """
-        self.sm.add_widget(InicioScreen(name='inicio'))
+        self. inicio_screen = InicioScreen(name='inicio')
+        self. modo_juego_screen = ModoJuegoScreen(name='modo_juego')
+        self.sm.add_widget(self.inicio_screen)
+        self.sm.add_widget(self.modo_juego_screen)
         # self.sm.add_widget(SalvaPantalla(name='salvaPantallas'))
-        self.sm.add_widget(ModoJuegoScreen(name='modo_juego'))
 
         self.sm.current = 'inicio'  # Pantalla inicial
         return self.sm
 
-    def get_path_resources(self, idioma, img):
+    def get_path_resources(self, lang, img):
         """
         Generar el path completo de los recursos para cada S.O.
         """
-        return str(IMG_PATH.joinpath(idioma,img))
+        return str(IMG_PATH.joinpath(lang, img))
 
+    def manage_screens(self, key):
+        current_screen = self.sm.current_screen.name
+        if key == "up" or key == "down":
+            if current_screen == "inicio":
+                if self.current_option == "español":
+                    self.current_option = "ingles"
+                    self.inicio_screen.update_image_buttons_languaje(
+                        self.current_option)
+                else:
+                    self.current_option = "español"
+                    self.inicio_screen.update_image_buttons_languaje(
+                        self.current_option)
 
-
-    def on_start(self):
+    def _keyboard_closed(self):
         """
-           docstrin
+        Llamada cuando el teclado se cierra utilizando la tecla escape.
         """
-        # self.event = Clock.schedule_once(self.change_screen, 5)
+        self.stop()
 
-    def reset_clock(self):
+    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         """
-            docstrin
+        Determinar la tecla presionada y gestionar el comportamiento de la
+        interfaz.
         """
-        Clock.unschedule(self.event)
-        self.on_start()
+        if keycode[1] == 'escape':
+            keyboard.release()
+        elif keycode[1] == 'up':
+            self.manage_screens(keycode[1])
+        elif keycode[1] == 'down':
+            pass
+        elif keycode[1] == 'enter':
+            pass
+        elif keycode[1] == "left":
+            pass
 
-    def refresh(self, screen):
-        global page
-        self.sm.clear_widgets(screens=[self.sm.get_screen(screen)])
-        if screen == 'menu_esp':
-            page = MenuEsp(name='menu_esp')
-        elif screen == 'menu_abc':
-            page = MenuABC(name='menu_esp')
-
-        self.sm.add_widget(page)
-
-    def change_screen(self, screen: str = 'inicio'):
-        self.sm.current = screen
-        # if screen_manager.current != 'salvaPantallas':
-        #     screen_manager.current = 'salvaPantallas'
-
-    def set_language(self, lang: str = 'es'):
-        if not langs.equals(lang):
-            langs.set_lang(lang)
-            self.change_memomry()
-
-    def change_memomry(self):
-        self.info_screen = langs.read_json()
-        # for key, value in self.data_page.items():
-        #     print(f'{key}: {value}')
-        self.refresh('menu_esp')
-
-
+        return True
 
 
 if __name__ == '__main__':

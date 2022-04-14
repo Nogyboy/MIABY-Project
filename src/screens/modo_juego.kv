@@ -1,8 +1,12 @@
 #:kivy 1.0
 <ModoJuegoScreen>:
-    BoxLayout:
-        padding:25
-        orientation: 'vertical'
+    FloatLayout:
+        canvas.before:
+            BorderImage:
+#                source: app.get_path_resources('common','inicio_fondo.png')
+                border:10,10,10,10
+                pos: self.pos
+                size: self.size
         BoxLayout:
             orientation: 'horizontal'
             adaptive_height: False
