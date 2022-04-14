@@ -1,0 +1,26 @@
+#:kivy 1.0
+<InicioScreen>:
+    FloatLayout:
+        canvas.before:
+            BorderImage:
+                source: app.get_path_resources('common','inicio_fondo.png')
+                border:10,10,10,10
+                pos: self.pos
+                size: self.size
+        Button:
+            background_normal:app.get_path_resources('esp','boton_esp_normal.png')
+            background_down:app.get_path_resources('esp','boton_esp_down.png')
+            size_hint: .29, .18
+            pos_hint: {'x': .038, 'y': .1}
+            border:5,5,5,5
+            on_press: root.seleccionar_idioma('español')
+            on_release: app.sm.current = 'modo_juego'
+            
+        Button:
+            background_normal:app.get_path_resources('en','boton_ingles_normal.png')
+            background_down:app.get_path_resources('en','boton_ingles_down.png')
+            size_hint: .29, .18
+            pos_hint: {'x': .35, 'y': .1}
+            border:5,5,5,5
+            on_press: root.seleccionar_idioma('ingles')
+            on_release: app.sm.current = 'modo_juego'

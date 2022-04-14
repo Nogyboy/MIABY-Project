@@ -19,7 +19,7 @@ class Local:
 
 
     def equals(self, lang: str) -> bool:
-        print(f'{lang}=={self.lang} -> {lang == self.lang}')
+        # print(f'{lang}=={self.lang} -> {lang == self.lang}')
         return lang == self.lang
 
     def get_lang(self) -> str:
@@ -28,7 +28,7 @@ class Local:
     def set_lang(self, new_lang) -> None:
         assert (new_lang in self.lang_accept)
         self.lang = new_lang
-        print(f'Set lang {self.lang} to {new_lang}')
+        # print(f'Set lang {self.lang} to {new_lang}')
 
     def read_json(self) -> dict:
 
@@ -37,7 +37,7 @@ class Local:
         else:
             self.path = str(PATH_LANG / 'eng' / 'eng.json')
 
-        print(f'Path Json Lang {self.path}')
+        # print(f'Path Json Lang {self.path}')
 
         with open(self.path) as file:
             data = json.load(file)
