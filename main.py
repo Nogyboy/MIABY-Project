@@ -1,6 +1,5 @@
-# App
+#App
 from kivy.core.window import Window
-from src.settings.local import langs
 from kivy.clock import Clock
 from kivy.uix.screenmanager import ScreenManager
 from kivy.app import App
@@ -28,13 +27,12 @@ Config.read(KIVY_CONFIG)
 
 
 class MIABYApp(App):
-    info_screen = {}  # Conjunto de palabras según el idioma
+    words = {}  # Conjunto de palabras según el idioma
     sm = ScreenManager()  # Manejador de Pantallas
-    language = "Nulo"  # Idioma seleccionado
     current_option = "español"  # Opción de la pantalla acutal
+    menu_settings_state = True # Estado del Menú de Configuraciones
 
     inicio_screen = ObjectProperty(None)
-
     modo_juego_screen = ObjectProperty(None)
 
     def __init__(self, **kwargs):
@@ -85,15 +83,21 @@ class MIABYApp(App):
         self.sm.current = 'inicio'  # Pantalla inicial
         return self.sm
 
-    def get_path_resources(self, lang, img):
+    def get_path_resources(self, tipo, file):
         """
         Generar el path completo de los recursos para cada S.O.
         """
-        return str(IMG_PATH.joinpath(lang, img))
+        if tipo == "words":
+            return str(BASE_DIR.joinpath("resources","words",file))
+        else:
+            return str(IMG_PATH.joinpath(tipo, file))
 
     def manage_screens(self, key):
+        """
+        Gestionar el comportamiento de la interfaz.
+        """
         current_screen = self.sm.current_screen.name
-        if key == "up" or key == "down":
+        if key == "up" or key == "down":# Cambiar la opcion de la pantalla actual
             if current_screen == "inicio":
                 if self.current_option == "español":
                     self.current_option = "ingles"
@@ -103,6 +107,10 @@ class MIABYApp(App):
                     self.current_option = "español"
                     self.inicio_screen.update_image_buttons_languaje(
                         self.current_option)
+        elif key == "enter":
+            if current_screen == "inicio":
+                self.inicio_screen.choose_language(lang=self.current_option)
+
 
     def _keyboard_closed(self):
         """
@@ -112,20 +120,19 @@ class MIABYApp(App):
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         """
-        Determinar la tecla presionada y gestionar el comportamiento de la
-        interfaz.
+        Determinar la tecla presionada y solicitar cambios en la interfaz.
         """
         if keycode[1] == 'escape':
             keyboard.release()
-        elif keycode[1] == 'up':
+        elif keycode[1] == "f1":
+            if self.menu_settings_state:
+                self.open_settings()
+                self.menu_settings_state = False
+            else:
+                self.close_settings()
+                self.menu_settings_state = True
+        else:
             self.manage_screens(keycode[1])
-        elif keycode[1] == 'down':
-            pass
-        elif keycode[1] == 'enter':
-            pass
-        elif keycode[1] == "left":
-            pass
-
         return True
 
 

@@ -3,14 +3,12 @@ from kivy.uix.screenmanager import Screen
 from kivy.app import App
 from kivy.properties import (ObjectProperty)
 
+import json
+from icecream import ic
 # from playsound import playsound
 
-from kivy.uix.behaviors import FocusBehavior
 
 Builder.load_file('src/screens/inicio.kv')
-
-# class FocusButton(FocusBehavior, Button):
-#    pass
 
 
 class InicioScreen(Screen):
@@ -18,14 +16,18 @@ class InicioScreen(Screen):
     esp_boton = ObjectProperty(None)
     en_boton = ObjectProperty(None)
 
-    def choose_language(self, lang: str = 'es'):
+    def choose_language(self, lang):
         """
         Selección de idioma, se almacena en la variable idioma de la clase
         MIABYApp.
         """
         app = App.get_running_app()
-        app.language = lang
+        path_json_words = app.get_path_resources("words","data.json")
 
+        with open(path_json_words, encoding="utf-8") as file:
+            app.words = json.load(file)[lang]
+
+        ic(app.words)
         del app
 
     def update_image_buttons_languaje(self, option):

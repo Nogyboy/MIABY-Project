@@ -2,7 +2,6 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.uix.button import Button
 
-from src.settings import PATH_VIDEOS
 
 Builder.load_string("""
 <SalvaPantalla>:
@@ -17,7 +16,7 @@ Builder.load_string("""
 
 
 class SalvaPantalla(Screen):
-    video_path = str(PATH_VIDEOS / 'caritafeli.mp4')
+    #video_path = str(PATH_VIDEOS / 'caritafeli.mp4')
     state = 'play'
     options = {'eos': 'loop'}
     allow_stretch = True

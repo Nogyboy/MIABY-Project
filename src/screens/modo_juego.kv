@@ -13,7 +13,7 @@
             #md_bg_color: app.theme_cls.primary_color
             Label:
                 id: titulo
-                text: root.get_data()['titulo_pantalla']
+                text: "Testo"
 
         BoxLayout:
             spacing: 25
@@ -22,7 +22,6 @@
                 width: 250
                 text: 'Observar'
                 #on_press: app.change_screen('salvaPantallas')
-                on_release:root.app_ins()
             Button:
                 text: 'Interactuar'
             Button:
