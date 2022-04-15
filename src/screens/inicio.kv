@@ -3,22 +3,21 @@
     esp_boton: esp_btn
     en_boton: en_btn
     FloatLayout:
-        canvas.before:
-            BorderImage:
-                source: app.get_path_resources('common','inicio_fondo.png')
-                border:10,10,10,10
-                pos: self.pos
-                size: self.size
+        Image:
+            source: app.get_path_resources('common','inicio_fondo.png')
+            pos: self.pos
+            size: self.size
+
         Image:
             id:esp_btn
-            source:app.get_path_resources('esp','boton_esp_down.png')
+            source:app.get_path_resources('español','boton_esp_down.png')
             size_hint: .29, .18
             pos_hint: {'x': .038, 'y': .1}
             border:5,5,5,5
  
         Image:
             id:en_btn
-            source:app.get_path_resources('en','boton_ingles_normal.png')
+            source:app.get_path_resources('ingles','boton_ingles_normal.png')
             size_hint: .29, .18
             pos_hint: {'x': .35, 'y': .1}
             border:5,5,5,5

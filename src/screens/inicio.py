@@ -27,10 +27,9 @@ class InicioScreen(Screen):
         with open(path_json_words, encoding="utf-8") as file:
             app.words = json.load(file)[lang]
 
-        ic(app.words)
         del app
 
-    def update_image_buttons_languaje(self, option):
+    def update_image_buttons_language(self, option):
         """
         Actualiza la imagen del botón en función de la
         opción que se encuentre actualmente seleccionada.
@@ -38,19 +37,16 @@ class InicioScreen(Screen):
         app = App.get_running_app()
         if option == "español":
             self.esp_boton.source = app.get_path_resources(
-                "esp", "boton_esp_down.png")
+                "español", "boton_esp_down.png")
             self.en_boton.source = app.get_path_resources(
-                "en", "boton_ingles_normal.png")
+                "ingles", "boton_ingles_normal.png")
         elif option == "ingles":
             self.esp_boton.source = app.get_path_resources(
-                "esp", "boton_esp_normal.png")
+                "español", "boton_esp_normal.png")
             self.en_boton.source = app.get_path_resources(
-                "en", "boton_ingles_down.png")
+                "ingles", "boton_ingles_down.png")
 
         self.esp_boton.reload()
         self.en_boton.reload()
 
         del app
-
-
-# @TODO Contrustruir el método para cargar la información de las palabra en función del idioma desde aquí

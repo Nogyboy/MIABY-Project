@@ -1,28 +1,32 @@
 #:kivy 1.0
 <ModoJuegoScreen>:
+    observar_boton: obs_btn
+    aprender_boton: apr_btn
+    interactuar_boton: int_btn
+    background:bcg
     FloatLayout:
-        canvas.before:
-            BorderImage:
-#                source: app.get_path_resources('common','inicio_fondo.png')
-                border:10,10,10,10
-                pos: self.pos
-                size: self.size
-        BoxLayout:
-            orientation: 'horizontal'
-            adaptive_height: False
-            #md_bg_color: app.theme_cls.primary_color
-            Label:
-                id: titulo
-                text: "Testo"
-
-        BoxLayout:
-            spacing: 25
-            adaptive_height: False
-            Button:
-                width: 250
-                text: 'Observar'
-                #on_press: app.change_screen('salvaPantallas')
-            Button:
-                text: 'Interactuar'
-            Button:
-                text: 'Aprender'
+        Image:
+            id:bcg
+            source: app.get_path_resources('español','modo_juego.png')
+            pos: self.pos
+            size: self.size
+        Image:
+            id:obs_btn
+            source:app.get_path_resources('español','boton_observar_down.png')
+            size_hint: .29, .18
+            pos_hint: {'x': .65, 'y': .55}
+            border:5,5,5,5
+ 
+        Image:
+            id:apr_btn
+            source:app.get_path_resources('español','boton_aprender_normal.png')
+            size_hint: .29, .18
+            pos_hint: {'x': .65, 'y': .35}
+            border:5,5,5,5
+        
+        Image:
+            id:int_btn
+            source:app.get_path_resources('español','boton_interactuar_normal.png')
+            size_hint: .29, .18
+            pos_hint: {'x': .65, 'y': .15}
+            border:5,5,5,5
