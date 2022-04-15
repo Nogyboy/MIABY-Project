@@ -15,6 +15,7 @@ Config.read(KIVY_CONFIG_PATH)
 # Configuración Local de la Aplicación
 from src.screens.modo_juego import ModoJuegoScreen
 from src.screens.inicio import InicioScreen
+from src.screens.lectura_tarjeta import LecturaTarjetaScreen
 from kivy.core.window import Window
 from kivy.properties import (ObjectProperty)
 from kivy.app import App
@@ -33,6 +34,7 @@ class MIABYApp(App):
 
     inicio_screen = ObjectProperty(None)
     modo_juego_screen = ObjectProperty(None)
+    lectura_tarjeta_screen = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         # Definir la escucha del teclado
@@ -71,10 +73,13 @@ class MIABYApp(App):
             - Modo - Aprender
             - Modo - Practicar
         """
-        self. inicio_screen = InicioScreen(name='inicio')
-        self. modo_juego_screen = ModoJuegoScreen(name='modo_juego')
+        self.inicio_screen = InicioScreen(name='inicio')
+        self.modo_juego_screen = ModoJuegoScreen(name='modo_juego')
+        self.lectura_tarjeta_screen = LecturaTarjetaScreen(name="lectura_tarjeta")
+        
         self.sm.add_widget(self.inicio_screen)
         self.sm.add_widget(self.modo_juego_screen)
+        self.sm.add_widget(self.lectura_tarjeta_screen)
         # self.sm.add_widget(SalvaPantalla(name='salvaPantallas'))
 
         self.sm.current = 'inicio'  # Pantalla inicial
@@ -121,10 +126,20 @@ class MIABYApp(App):
                 self.modo_juego_screen.update_image_buttons_mode(
                     self.current_option_mode, self.inicio_option)
                 self.sm.current = "modo_juego"
+            if current_screen == "modo_juego":
+                if self.current_option_mode == "observar":
+                    pass
+                elif self.current_option_mode == "aprender":
+                    pass
+                elif self.current_option_mode == "interactuar":
+                    self.lectura_tarjeta_screen.update_background_image(self.inicio_option)
+                    self.sm.current = "lectura_tarjeta"
 
         elif key == "left":# Botón de regresar
             if current_screen == "modo_juego":
                 self.sm.current = "inicio"
+            elif current_screen == "lectura_tarjeta":
+                self.sm.current = "modo_juego"
 
     def _keyboard_closed(self):
         """
