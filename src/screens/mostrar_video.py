@@ -12,10 +12,10 @@ class MostrarVideoScreen(Screen):
     """
 
     def __init__(self, **kw):
+        super().__init__(**kw)
         self.app = App.get_running_app()
         self.video = Video(source=self.app.get_path_resources(tipo='video', file='2.mp4'),pos=self.pos, size=self.size)
         self.add_widget(self.video)
-        super().__init__(**kw)
     
     def on_enter(self, *args):
         self.video.state = "play"

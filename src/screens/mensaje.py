@@ -14,11 +14,11 @@ class MensajeScreen(Screen, FloatLayout):
     before_lang = ""
 
     def __init__(self, **kw):
+        super().__init__(**kw)
         self.app = App.get_running_app()
-
         self.image_gif_esp = AsyncImage(source=self.app.get_path_resources('español','mensaje.gif'), pos=self.pos, size=self.size, keep_ratio=False, keep_data=True, anim_delay=-1, anim_loop=1)
         self.image_gif_en = AsyncImage(source=self.app.get_path_resources('ingles','mensaje.gif'),pos=self.pos, size=self.size, keep_ratio=False, keep_data=True, anim_delay=-1, anim_loop=1)
-        super().__init__(**kw)
+        
 
 
     def update_time(self, sec):

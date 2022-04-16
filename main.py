@@ -23,6 +23,7 @@ from src.screens.lectura_tarjeta import LecturaTarjetaScreen
 from src.screens.ingresar_texto import IngresarTextoScreen
 from src.screens.mensaje import MensajeScreen
 from src.screens.mostrar_video import MostrarVideoScreen
+from src.screens.bienvenida import BienvenidaScreen
 
 
 # App
@@ -45,6 +46,7 @@ class MIABYApp(App):
     word_selected = "" # Palabra seleccionada según el idioma
     audio_file = None
 
+    bienvenida_screen = ObjectProperty(None)
     inicio_screen = ObjectProperty(None)
     modo_juego_screen = ObjectProperty(None)
     lectura_tarjeta_screen = ObjectProperty(None)
@@ -89,6 +91,8 @@ class MIABYApp(App):
             - Modo - Aprender
             - Modo - Practicar
         """
+
+        self.bienvenida_screen = BienvenidaScreen(name="bienvenida")
         self.inicio_screen = InicioScreen(name='inicio')
         self.modo_juego_screen = ModoJuegoScreen(name='modo_juego')
         self.lectura_tarjeta_screen = LecturaTarjetaScreen(name="lectura_tarjeta")
@@ -96,6 +100,7 @@ class MIABYApp(App):
         self.mensaje_screen = MensajeScreen(name="mensaje")
         self.video_screen = MostrarVideoScreen(name="video")
 
+        self.sm.add_widget(self.bienvenida_screen)
         self.sm.add_widget(self.inicio_screen)
         self.sm.add_widget(self.modo_juego_screen)
         self.sm.add_widget(self.lectura_tarjeta_screen)
@@ -103,7 +108,7 @@ class MIABYApp(App):
         self.sm.add_widget(self.mensaje_screen)
         self.sm.add_widget(self.video_screen)
 
-        self.sm.current = "inicio"  # Pantalla inicial
+        self.sm.current = "bienvenida"  # Pantalla inicial
         return self.sm
 
     def get_path_resources(self, tipo, file):
@@ -149,7 +154,9 @@ class MIABYApp(App):
                     self.current_option_mode, self.inicio_option)
 
         elif key == "enter":# Seleccionar el idioma y modo de juego
-            if current_screen == "inicio":
+            if current_screen == "bienvenida":
+                self.sm.current = "inicio"
+            elif current_screen == "inicio":
                 self.inicio_screen.choose_language(lang=self.inicio_option)
                 self.modo_juego_screen.update_image_buttons_mode(
                     self.current_option_mode, self.inicio_option)
