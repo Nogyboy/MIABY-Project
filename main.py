@@ -1,4 +1,4 @@
-# App
+# Configuración Local de la Aplicación
 from kivy.config import Config
 
 from pathlib import Path
@@ -12,10 +12,15 @@ IMG_PATH = BASE_DIR.joinpath('resources', 'img')
 Config.read(KIVY_CONFIG_PATH)
 
 
-# Configuración Local de la Aplicación
+# Screen
 from src.screens.modo_juego import ModoJuegoScreen
 from src.screens.inicio import InicioScreen
 from src.screens.lectura_tarjeta import LecturaTarjetaScreen
+from src.screens.ingresar_texto import IngresarTextoScreen
+from src.screens.mensaje import MensajeScreen
+
+
+# App
 from kivy.core.window import Window
 from kivy.properties import (ObjectProperty)
 from kivy.app import App
@@ -31,11 +36,14 @@ class MIABYApp(App):
     current_option_mode = "observar"  # Opción actual del modo de juego
     modo_option = ("observar", "aprender", "interactuar")
     menu_settings_state = True  # Estado del Menú de Configuraciones
+    word_selected = "" # Palabra seleccionada según el idioma
 
     inicio_screen = ObjectProperty(None)
     modo_juego_screen = ObjectProperty(None)
     lectura_tarjeta_screen = ObjectProperty(None)
-
+    ingresar_texto_screen = ObjectProperty(None)
+    mensaje_screen = ObjectProperty(None)
+    
     def __init__(self, **kwargs):
         # Definir la escucha del teclado
         self._keyboard = Window.request_keyboard(
@@ -76,13 +84,17 @@ class MIABYApp(App):
         self.inicio_screen = InicioScreen(name='inicio')
         self.modo_juego_screen = ModoJuegoScreen(name='modo_juego')
         self.lectura_tarjeta_screen = LecturaTarjetaScreen(name="lectura_tarjeta")
-        
+        self.ingresar_texto_screen = IngresarTextoScreen(name="ingresar_texto")
+        self.mensaje_screen = MensajeScreen(name="mensaje")
+
         self.sm.add_widget(self.inicio_screen)
         self.sm.add_widget(self.modo_juego_screen)
         self.sm.add_widget(self.lectura_tarjeta_screen)
+        self.sm.add_widget(self.ingresar_texto_screen)
+        self.sm.add_widget(self.mensaje_screen)
         # self.sm.add_widget(SalvaPantalla(name='salvaPantallas'))
 
-        self.sm.current = 'inicio'  # Pantalla inicial
+        self.sm.current = "inicio"  # Pantalla inicial
         return self.sm
 
     def get_path_resources(self, tipo, file):
@@ -125,21 +137,36 @@ class MIABYApp(App):
                 self.inicio_screen.choose_language(lang=self.inicio_option)
                 self.modo_juego_screen.update_image_buttons_mode(
                     self.current_option_mode, self.inicio_option)
+                self.lectura_tarjeta_screen.update_background_image(self.inicio_option)
+                self.ingresar_texto_screen.update_background_image(self.inicio_option)
+                self.mensaje_screen.update_gif(self.inicio_option)
                 self.sm.current = "modo_juego"
-            if current_screen == "modo_juego":
+
+            elif current_screen == "modo_juego":
                 if self.current_option_mode == "observar":
+
                     pass
                 elif self.current_option_mode == "aprender":
                     pass
+
                 elif self.current_option_mode == "interactuar":
-                    self.lectura_tarjeta_screen.update_background_image(self.inicio_option)
                     self.sm.current = "lectura_tarjeta"
+
+            elif current_screen == "lectura_tarjeta":
+                self.sm.current = "ingresar_texto"
 
         elif key == "left":# Botón de regresar
             if current_screen == "modo_juego":
                 self.sm.current = "inicio"
             elif current_screen == "lectura_tarjeta":
                 self.sm.current = "modo_juego"
+            elif current_screen == "ingresar_texto":
+                self.sm.current = "lectura_tarjeta"
+        else:
+            if current_screen == "ingresar_texto":
+                self.ingresar_texto_screen.validate_word_entry(key.upper())
+
+
 
     def _keyboard_closed(self):
         """

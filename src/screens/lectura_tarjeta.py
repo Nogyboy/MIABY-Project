@@ -20,3 +20,19 @@ class LecturaTarjetaScreen(Screen):
         self.background.reload()
 
         del app
+
+    def select_word(self, code):
+        """
+        Asigna la palabra según el idioma para luego
+        ser deletreada.
+        """
+        app = App.get_running_app()
+        app.word_selected = app.words[code]
+        del app
+        
+    def on_enter(self, *args):
+        # @TODO Implementar la lectura de las tarjetas cuando entra a esta pantalla, se podría cancelar
+        # con la tecla de regreso.
+        self.select_word("7")
+        
+        return super().on_enter(*args)
