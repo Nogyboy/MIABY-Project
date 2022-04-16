@@ -11,6 +11,8 @@ IMG_PATH = BASE_DIR.joinpath('resources', 'img')
 
 AUDIO_PATH = BASE_DIR.joinpath('resources', 'audios')
 
+VIDEO_PATH = BASE_DIR.joinpath('resources', 'video')
+
 Config.read(KIVY_CONFIG_PATH)
 
 
@@ -20,6 +22,7 @@ from src.screens.inicio import InicioScreen
 from src.screens.lectura_tarjeta import LecturaTarjetaScreen
 from src.screens.ingresar_texto import IngresarTextoScreen
 from src.screens.mensaje import MensajeScreen
+from src.screens.mostrar_video import MostrarVideoScreen
 
 
 # App
@@ -47,6 +50,7 @@ class MIABYApp(App):
     lectura_tarjeta_screen = ObjectProperty(None)
     ingresar_texto_screen = ObjectProperty(None)
     mensaje_screen = ObjectProperty(None)
+    video_screen = ObjectProperty(None)
     
     def __init__(self, **kwargs):
         # Definir la escucha del teclado
@@ -90,24 +94,31 @@ class MIABYApp(App):
         self.lectura_tarjeta_screen = LecturaTarjetaScreen(name="lectura_tarjeta")
         self.ingresar_texto_screen = IngresarTextoScreen(name="ingresar_texto")
         self.mensaje_screen = MensajeScreen(name="mensaje")
+        self.video_screen = MostrarVideoScreen(name="video")
 
         self.sm.add_widget(self.inicio_screen)
         self.sm.add_widget(self.modo_juego_screen)
         self.sm.add_widget(self.lectura_tarjeta_screen)
         self.sm.add_widget(self.ingresar_texto_screen)
         self.sm.add_widget(self.mensaje_screen)
-        # self.sm.add_widget(SalvaPantalla(name='salvaPantallas'))
+        self.sm.add_widget(self.video_screen)
+
         self.sm.current = "inicio"  # Pantalla inicial
         return self.sm
 
-    def get_path_resources(self, tipo, file, audio_lang: str="español"):
+    def get_path_resources(self, tipo, file):
         """
         Generar el path completo de los recursos para cada S.O.
         """
         if tipo == "words":
             return str(BASE_DIR.joinpath("resources", "words", file))
+
         elif tipo == "audio":
-            return str(AUDIO_PATH.joinpath(audio_lang, file))
+            return str(AUDIO_PATH.joinpath(self.inicio_option, file))
+
+        elif tipo == "video":
+            return str(VIDEO_PATH.joinpath(self.current_option_mode, self.inicio_option, file))
+
         else:
             return str(IMG_PATH.joinpath(tipo, file))
 
@@ -149,11 +160,10 @@ class MIABYApp(App):
 
             elif current_screen == "modo_juego":
                 if self.current_option_mode == "observar":
-
-                    pass
+                    self.sm.current = "video" 
                 elif self.current_option_mode == "aprender":
                     pass
-
+ 
                 elif self.current_option_mode == "interactuar":
                     self.sm.current = "lectura_tarjeta"
 
@@ -175,7 +185,7 @@ class MIABYApp(App):
         """
         Cargar audio
         """
-        self.audio_file = SoundLoader.load(self.get_path_resources("audio", file, audio_lang=lang))
+        self.audio_file = SoundLoader.load(self.get_path_resources("audio", file))
         
 
     def play_audio(self):

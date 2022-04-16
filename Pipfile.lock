@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "294ae68821b78999af9a9a4a74fa3772cbe14cf46d53d1d66b63e307deb44b6c"
+            "sha256": "21a58793d06bb731468c9ffce4af5650c5c8fab7e54e358d7778b8b63448da22"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -169,14 +169,6 @@
             ],
             "version": "==0.1.5"
         },
-        "kivymd": {
-            "hashes": [
-                "sha256:97bc1f9442d25ff9dbd617d5ca74d53e757b92c68636a388e22d3f05a4f19c12",
-                "sha256:c1fbbdaa31b62fa925abac1cadadfdf178a15f1adc3f2e2452e1496a91eab8e1"
-            ],
-            "index": "pypi",
-            "version": "==0.104.2"
-        },
         "pillow": {
             "hashes": [
                 "sha256:01ce45deec9df310cbbee11104bae1a2a43308dd9c317f99235b6d3080ddd66e",
@@ -220,13 +212,6 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==9.1.0"
-        },
-        "playsound": {
-            "hashes": [
-                "sha256:cc6ed11d773034b0ef624e6bb4bf50f4b76b8414a59ce6d38afb89b423297ced"
-            ],
-            "index": "pypi",
-            "version": "==1.3.0"
         },
         "pygments": {
             "hashes": [

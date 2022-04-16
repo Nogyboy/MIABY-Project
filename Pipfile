@@ -5,8 +5,6 @@ name = "pypi"
 
 [packages]
 kivy = {extras = ["full"], version = "*"}
-kivymd = "*"
-playsound = "*"
 icecream = "*"
 
 [dev-packages]

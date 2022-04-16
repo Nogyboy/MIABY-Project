@@ -4,7 +4,6 @@ from kivy.app import App
 from kivy.properties import (ObjectProperty)
 
 import json
-from icecream import ic
 
 
 Builder.load_file('src/screens/inicio.kv')
