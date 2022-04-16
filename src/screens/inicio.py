@@ -48,3 +48,7 @@ class InicioScreen(Screen):
         self.en_boton.reload()
 
         del app
+
+    def on_enter(self, *args):
+        # @TODO Implementar el salvapantallas con el Clock
+        return super().on_enter(*args)

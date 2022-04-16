@@ -156,6 +156,7 @@ class MIABYApp(App):
         elif key == "enter":# Seleccionar el idioma y modo de juego
             if current_screen == "bienvenida":
                 self.sm.current = "inicio"
+
             elif current_screen == "inicio":
                 self.inicio_screen.choose_language(lang=self.inicio_option)
                 self.modo_juego_screen.update_image_buttons_mode(
@@ -167,15 +168,19 @@ class MIABYApp(App):
 
             elif current_screen == "modo_juego":
                 if self.current_option_mode == "observar":
+                    self.video_screen.select_random_video()
                     self.sm.current = "video" 
                 elif self.current_option_mode == "aprender":
-                    pass
+                    self.video_screen.select_random_video()
+                    self.sm.current = "video" 
  
                 elif self.current_option_mode == "interactuar":
                     self.sm.current = "lectura_tarjeta"
 
             elif current_screen == "lectura_tarjeta":
                 self.sm.current = "ingresar_texto"
+            elif current_screen == "video":
+                self.video_screen.stop_play_video("play")
 
         elif key == "left":# Botón de regresar
             if current_screen == "modo_juego":
@@ -184,6 +189,11 @@ class MIABYApp(App):
                 self.sm.current = "modo_juego"
             elif current_screen == "ingresar_texto":
                 self.sm.current = "lectura_tarjeta"
+            elif current_screen == "video":
+                self.sm.current = "modo_juego"
+        elif key == "right":
+            if current_screen == "video":
+                self.video_screen.stop_play_video("pause")
         else:
             if current_screen == "ingresar_texto":
                 self.ingresar_texto_screen.validate_word_entry(key.upper())
