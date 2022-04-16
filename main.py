@@ -9,6 +9,8 @@ KIVY_CONFIG_PATH = str(BASE_DIR.joinpath('miaby.ini'))
 
 IMG_PATH = BASE_DIR.joinpath('resources', 'img')
 
+AUDIO_PATH = BASE_DIR.joinpath('resources', 'audios')
+
 Config.read(KIVY_CONFIG_PATH)
 
 
@@ -26,6 +28,7 @@ from kivy.properties import (ObjectProperty)
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager
 from kivy.clock import Clock
+from kivy.core.audio import SoundLoader
 
 
 class MIABYApp(App):
@@ -37,6 +40,7 @@ class MIABYApp(App):
     modo_option = ("observar", "aprender", "interactuar")
     menu_settings_state = True  # Estado del Menú de Configuraciones
     word_selected = "" # Palabra seleccionada según el idioma
+    audio_file = None
 
     inicio_screen = ObjectProperty(None)
     modo_juego_screen = ObjectProperty(None)
@@ -93,16 +97,17 @@ class MIABYApp(App):
         self.sm.add_widget(self.ingresar_texto_screen)
         self.sm.add_widget(self.mensaje_screen)
         # self.sm.add_widget(SalvaPantalla(name='salvaPantallas'))
-
         self.sm.current = "inicio"  # Pantalla inicial
         return self.sm
 
-    def get_path_resources(self, tipo, file):
+    def get_path_resources(self, tipo, file, audio_lang: str="español"):
         """
         Generar el path completo de los recursos para cada S.O.
         """
         if tipo == "words":
             return str(BASE_DIR.joinpath("resources", "words", file))
+        elif tipo == "audio":
+            return str(AUDIO_PATH.joinpath(audio_lang, file))
         else:
             return str(IMG_PATH.joinpath(tipo, file))
 
@@ -140,7 +145,7 @@ class MIABYApp(App):
                 self.lectura_tarjeta_screen.update_background_image(self.inicio_option)
                 self.ingresar_texto_screen.update_background_image(self.inicio_option)
                 self.mensaje_screen.update_gif(self.inicio_option)
-                self.sm.current = "modo_juego"
+                self.sm.current = "modo_juego"                
 
             elif current_screen == "modo_juego":
                 if self.current_option_mode == "observar":
@@ -166,7 +171,27 @@ class MIABYApp(App):
             if current_screen == "ingresar_texto":
                 self.ingresar_texto_screen.validate_word_entry(key.upper())
 
+    def load_audio(self, file, lang):
+        """
+        Cargar audio
+        """
+        self.audio_file = SoundLoader.load(self.get_path_resources("audio", file, audio_lang=lang))
+        
 
+    def play_audio(self):
+        """
+        Reproducir audio
+        """
+        if self.audio_file:
+            self.audio_file.play()
+
+    def stop_audio(self):
+        """
+        Detener audio
+        """
+        if self.audio_file:
+            self.audio_file.stop()
+            self.audio_file.unload()
 
     def _keyboard_closed(self):
         """

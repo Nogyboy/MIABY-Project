@@ -5,7 +5,6 @@ from kivy.properties import (ObjectProperty)
 
 import json
 from icecream import ic
-# from playsound import playsound
 
 
 Builder.load_file('src/screens/inicio.kv')

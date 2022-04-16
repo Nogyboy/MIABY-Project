@@ -9,6 +9,7 @@ dist/
 # Cache de Python
 __pycache__/
 
-
+resources/video/*
+resources/audios/*
 #
 .idea/
