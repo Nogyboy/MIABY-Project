@@ -13,3 +13,13 @@ autopep8 = "*"
 
 [requires]
 python_version = "3.9"
+
+
+# Install on Raspberry
+# sudo apt install python3-sdl2
+# pip install "kivy[full]"
+#sudo apt install pkg-config libgl1-mesa-dev libgles2-mesa-dev \
+#   libgstreamer1.0-dev \
+#   gstreamer1.0-plugins-{bad,base,good,ugly} \
+#   gstreamer1.0-{omx,alsa} libmtdev-dev \
+#   xclip xsel libjpeg-dev
