@@ -21,8 +21,8 @@ class LecturaTarjetaScreen(Screen):
         self.app = App.get_running_app()
         self.image_vid_esp = Video(source=self.app.get_path_resources('español','leer_tarjeta.mp4'), pos=self.pos, size=self.size, nocache=True, state="stop", options = {'eos': 'loop'}, allow_stretch=True)
         self.image_vid_en = Video(source=self.app.get_path_resources('ingles','leer_tarjeta.mp4'),pos=self.pos, size=self.size, nocache=True, state="stop", options = {'eos': 'loop'}, allow_stretch=True)
-        
-
+        self.event = Clock.schedule_interval(self.update_time_read_card, 0.5)
+        self.event.cancel()
     def update_background_image(self, lang):
         """
         Actualiza la imagen de fondo en función del idioma.
@@ -43,7 +43,7 @@ class LecturaTarjetaScreen(Screen):
         Asigna la palabra según el idioma para luego
         ser deletreada.
         """
-        self.app.word_selected = self.app.words[code]
+        self.app.word_selected = self.app.words[str(code)]
         
     def update_time_read_card(self, sec):
         """
@@ -58,7 +58,7 @@ class LecturaTarjetaScreen(Screen):
         elif id != None:
             self.event.cancel()
             self.secs = 0
-            self.select_word(text)
+            self.select_word(int(text))
             self.app.sm.current = "ingresar_texto"
 
 
@@ -74,9 +74,7 @@ class LecturaTarjetaScreen(Screen):
         self.app.load_audio("9.wav")
         self.app.play_audio()
 
-        self.event = Clock.schedule_interval(self.update_time_read_card, 0.5)
-        # @TODO Implementar la lectura de las tarjetas cuando entra a esta pantalla, se podría cancelar
-        # con la tecla de regreso.
+        self.event.event()
         
         return super().on_enter(*args)
 
