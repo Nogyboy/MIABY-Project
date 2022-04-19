@@ -13,35 +13,38 @@ class ModoJuegoScreen(Screen):
     interactuar_boton = ObjectProperty(None)
     background = ObjectProperty(None)
 
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.app = App.get_running_app()
+
     def update_image_buttons_mode(self, option, lang):
         """
         Actualiza la imagen del botón en función de la
         opción que se encuentre actualmente seleccionada.
         """
-        app = App.get_running_app()
         if option == "observar":
-            self.observar_boton.source = app.get_path_resources(
+            self.observar_boton.source = self.app.get_path_resources(
                 lang, "boton_observar_down.png")
-            self.aprender_boton.source = app.get_path_resources(
+            self.aprender_boton.source = self.app.get_path_resources(
                 lang, "boton_aprender_normal.png")
-            self.interactuar_boton.source = app.get_path_resources(
+            self.interactuar_boton.source = self.app.get_path_resources(
                 lang, "boton_interactuar_normal.png")
         elif option == "aprender":
-            self.observar_boton.source = app.get_path_resources(
+            self.observar_boton.source = self.app.get_path_resources(
                 lang, "boton_observar_normal.png")
-            self.aprender_boton.source = app.get_path_resources(
+            self.aprender_boton.source = self.app.get_path_resources(
                 lang, "boton_aprender_down.png")
-            self.interactuar_boton.source = app.get_path_resources(
+            self.interactuar_boton.source = self.app.get_path_resources(
                 lang, "boton_interactuar_normal.png")
         elif option == "interactuar":
-            self.observar_boton.source = app.get_path_resources(
+            self.observar_boton.source = self.app.get_path_resources(
                 lang, "boton_observar_normal.png")
-            self.aprender_boton.source = app.get_path_resources(
+            self.aprender_boton.source = self.app.get_path_resources(
                 lang, "boton_aprender_normal.png")
-            self.interactuar_boton.source = app.get_path_resources(
+            self.interactuar_boton.source = self.app.get_path_resources(
                 lang, "boton_interactuar_down.png")
 
-        self.background.source = app.get_path_resources(
+        self.background.source = self.app.get_path_resources(
                 lang, "modo_juego.png")
 
         self.background.reload()
@@ -49,4 +52,12 @@ class ModoJuegoScreen(Screen):
         self.aprender_boton.reload()
         self.interactuar_boton.reload()
 
-        del app
+    def on_enter(self, *args):
+        self.app.load_audio("4.wav")
+        self.app.play_audio()
+        return super().on_enter(*args)
+    
+    def on_pre_leave(self, *args):
+        if self.app.audio_file:
+            self.app.stop_audio()
+        return super().on_pre_leave(*args)

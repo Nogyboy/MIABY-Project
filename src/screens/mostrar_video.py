@@ -39,5 +39,7 @@ class MostrarVideoScreen(Screen):
     def stop_play_video(self, option):
         self.video.state = option
 
+    # @TODO Implementar el regreso al menu modo_juego cuando se termina el video
+
 
     

@@ -44,7 +44,7 @@ class MIABYApp(App):
     modo_option = ("observar", "aprender", "interactuar")
     menu_settings_state = True  # Estado del Menú de Configuraciones
     word_selected = "" # Palabra seleccionada según el idioma
-    audio_file = None
+    audio_file = None # Archivo de audio
 
     bienvenida_screen = ObjectProperty(None)
     inicio_screen = ObjectProperty(None)
@@ -169,13 +169,19 @@ class MIABYApp(App):
             elif current_screen == "modo_juego":
                 if self.current_option_mode == "observar":
                     self.video_screen.select_random_video()
-                    self.sm.current = "video" 
+                    self.stop_audio()
+                    self.load_audio("7.wav", bind=True)
+                    self.play_audio()
                 elif self.current_option_mode == "aprender":
                     self.video_screen.select_random_video()
-                    self.sm.current = "video" 
+                    self.stop_audio()
+                    self.load_audio("5.wav", bind=True)
+                    self.play_audio()
  
                 elif self.current_option_mode == "interactuar":
-                    self.sm.current = "lectura_tarjeta"
+                    self.stop_audio()
+                    self.load_audio("8.wav", bind=True)
+                    self.play_audio()
 
             elif current_screen == "lectura_tarjeta":
                 self.sm.current = "ingresar_texto"
@@ -198,11 +204,15 @@ class MIABYApp(App):
             if current_screen == "ingresar_texto":
                 self.ingresar_texto_screen.validate_word_entry(key.upper())
 
-    def load_audio(self, file, lang):
+    def load_audio(self, file, bind: bool = False):
         """
         Cargar audio
         """
         self.audio_file = SoundLoader.load(self.get_path_resources("audio", file))
+        if bind:
+            self.audio_file.bind(on_stop=self.do_after_stop_audio)
+        else:
+            self.audio_file.unbind()
         
 
     def play_audio(self):
@@ -211,18 +221,37 @@ class MIABYApp(App):
         """
         if self.audio_file:
             self.audio_file.play()
+            
 
     def stop_audio(self):
         """
         Detener audio
         """
-        if self.audio_file:
-            self.audio_file.stop()
-            self.audio_file.unload()
+        try:   
+            if self.audio_file:
+                self.audio_file.stop()
+                self.audio_file.unload()
+        except AttributeError:
+            print("Audio no cargado.")
+        except Exception as e:
+            print(f"Excepción no controlada: {e}")
+
+    def do_after_stop_audio(self, *args):
+        """
+        Realizar una acción despúes de finalizar el audio
+        """
+        current_screen = self.sm.current_screen.name
+        if self.audio_file and current_screen == "modo_juego":
+            if self.current_option_mode == "observar" or self.current_option_mode=="aprender":
+                self.sm.current = "video"
+                self.audio_file.unload()
+            elif self.current_option_mode == "interactuar":
+                self.sm.current = "lectura_tarjeta"
+                self.audio_file.unload()
 
     def _keyboard_closed(self):
         """
-        Llamada cuando el teclado se cierra utilizando la tecla escape.
+        Llamada cuando el teclado se cierra utilizando la tecla escape
         """
         self.stop()
 
