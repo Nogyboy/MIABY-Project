@@ -183,8 +183,6 @@ class MIABYApp(App):
                     self.load_audio("8.wav", bind=True)
                     self.play_audio()
 
-            elif current_screen == "lectura_tarjeta":
-                self.sm.current = "ingresar_texto"
             elif current_screen == "video":
                 self.video_screen.stop_play_video("play")
 
@@ -192,6 +190,7 @@ class MIABYApp(App):
             if current_screen == "modo_juego":
                 self.sm.current = "inicio"
             elif current_screen == "lectura_tarjeta":
+                self.lectura_tarjeta_screen.event.cancel()
                 self.sm.current = "modo_juego"
             elif current_screen == "ingresar_texto":
                 self.sm.current = "lectura_tarjeta"

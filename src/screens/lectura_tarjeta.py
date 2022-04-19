@@ -50,11 +50,16 @@ class LecturaTarjetaScreen(Screen):
         Contador de tiempo de lectura de tarjeta.
         """
         self.secs = self.secs+1
-        print(self.reader.read_no_block())
-        if self.secs == 60:
+        id, text = self.reader.read_no_block()
+        if self.secs == 40:
             self.event.cancel()
             self.secs = 0
             self.app.sm.current = "modo_juego"
+        elif id != None:
+            self.event.cancel()
+            self.secs = 0
+            self.select_word(text)
+            self.app.sm.current = "ingresar_texto"
 
 
     def on_enter(self, *args):
@@ -69,10 +74,9 @@ class LecturaTarjetaScreen(Screen):
         self.app.load_audio("9.wav")
         self.app.play_audio()
 
-        self.event = Clock.schedule_interval(self.update_time, 0.5)
+        self.event = Clock.schedule_interval(self.update_time_read_card, 0.5)
         # @TODO Implementar la lectura de las tarjetas cuando entra a esta pantalla, se podría cancelar
         # con la tecla de regreso.
-        self.select_word("7")
         
         return super().on_enter(*args)
 
