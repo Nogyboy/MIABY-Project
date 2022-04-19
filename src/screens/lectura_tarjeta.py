@@ -2,6 +2,9 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.app import App
 from kivy.uix.video import Video
+import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
+from kivy.clock import Clock
 
 Builder.load_file('src/screens/lectura_tarjeta.kv')
 
@@ -9,6 +12,9 @@ Builder.load_file('src/screens/lectura_tarjeta.kv')
 class LecturaTarjetaScreen(Screen):
     
     before_lang = ""
+    reader = SimpleMFRC522()
+    secs = 0
+    event = None
 
     def __init__(self, **kw):
         super().__init__(**kw)
@@ -39,6 +45,18 @@ class LecturaTarjetaScreen(Screen):
         """
         self.app.word_selected = self.app.words[code]
         
+    def update_time_read_card(self, sec):
+        """
+        Contador de tiempo de lectura de tarjeta.
+        """
+        self.secs = self.secs+1
+        print(self.reader.read_no_block())
+        if self.secs == 60:
+            self.event.cancel()
+            self.secs = 0
+            self.app.sm.current = "modo_juego"
+
+
     def on_enter(self, *args):
         """
         Al entrar en la pantalla iniciar la animacion
@@ -50,6 +68,8 @@ class LecturaTarjetaScreen(Screen):
 
         self.app.load_audio("9.wav")
         self.app.play_audio()
+
+        self.event = Clock.schedule_interval(self.update_time, 0.5)
         # @TODO Implementar la lectura de las tarjetas cuando entra a esta pantalla, se podría cancelar
         # con la tecla de regreso.
         self.select_word("7")
