@@ -1,3 +1,19 @@
+import RPi.GPIO as GPIO
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+
+#Definición de lineas y columnas
+Filas = [26,19,13,6]
+Columnas = [12,16,20,21]
+
+# Inicializar los pines GPIO
+
+for row in Filas:
+    GPIO.setup(row, GPIO.OUT)
+
+for j in range(7):
+    GPIO.setup(Columnas[j], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    
 # Configuración Local de la Aplicación
 from kivy.config import Config
 
@@ -33,22 +49,6 @@ from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
-
-import RPi.GPIO as GPIO
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-
-#Definición de lineas y columnas
-Filas = [26,19,13,6]
-Columnas = [12,16,20,21]
-
-# Inicializar los pines GPIO
-
-for row in Filas:
-    GPIO.setup(row, GPIO.OUT)
-
-for j in range(7):
-    GPIO.setup(Columnas[j], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 class MIABYApp(App):
 
