@@ -34,6 +34,21 @@ from kivy.uix.screenmanager import ScreenManager
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 
+import RPi.GPIO as GPIO
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+
+#Definición de lineas y columnas
+Filas = [26,19,13,6]
+Columnas = [12,16,20,21]
+
+# Inicializar los pines GPIO
+
+for row in Filas:
+    GPIO.setup(row, GPIO.OUT)
+
+for j in range(7):
+    GPIO.setup(Columnas[j], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 class MIABYApp(App):
 
@@ -59,6 +74,7 @@ class MIABYApp(App):
         self._keyboard = Window.request_keyboard(
             self._keyboard_closed, self.sm, 'text')
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
+        Clock.schedule_interval(self.read_keayboard, 1.0/10.0)
         super().__init__(**kwargs)
 
     def build_config(self, config):
@@ -247,6 +263,30 @@ class MIABYApp(App):
             elif self.current_option_mode == "interactuar":
                 self.sm.current = "lectura_tarjeta"
                 self.audio_file.unload()
+
+    def read_coordinate(self, fila, caracteres):
+        """
+        Lectura de la coordenada según la fila leída.
+        """
+        GPIO.output(fila, GPIO.HIGH)  
+        coordenada = 0
+        for pin in Columnas:
+            if bool(GPIO.input(pin)):
+                self.manage_screens(key=caracteres[coordenada])
+            coordenada+=1
+        GPIO.output(fila,GPIO.LOW)
+
+    def read_keayboard(self):
+        key_map = (
+            ("1" , "2" , "3" , "up"),
+        ("4" , "5" , "6" , "down" ),
+        ("7" , "8" , "9" , "left" ),
+        ("*" , "0" , "right" , "enter" )
+        )
+        arrow_keys = 0
+        for fila in Filas:
+            self.read_coordinate(fila, key_map[arrow_keys])
+            arrow_keys+=1
 
     def _keyboard_closed(self):
         """

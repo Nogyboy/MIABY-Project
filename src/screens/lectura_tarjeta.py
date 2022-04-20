@@ -2,7 +2,6 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.app import App
 from kivy.uix.video import Video
-import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 from kivy.clock import Clock
 
@@ -21,8 +20,8 @@ class LecturaTarjetaScreen(Screen):
         self.app = App.get_running_app()
         self.image_vid_esp = Video(source=self.app.get_path_resources('español','leer_tarjeta.mp4'), pos=self.pos, size=self.size, nocache=True, state="stop", options = {'eos': 'loop'}, allow_stretch=True)
         self.image_vid_en = Video(source=self.app.get_path_resources('ingles','leer_tarjeta.mp4'),pos=self.pos, size=self.size, nocache=True, state="stop", options = {'eos': 'loop'}, allow_stretch=True)
-        self.event = Clock.schedule_interval(self.update_time_read_card, 0.5)
-        self.event.cancel()
+        
+
     def update_background_image(self, lang):
         """
         Actualiza la imagen de fondo en función del idioma.
@@ -74,7 +73,7 @@ class LecturaTarjetaScreen(Screen):
         self.app.load_audio("9.wav")
         self.app.play_audio()
 
-        self.event.event()
+        self.event = Clock.schedule_interval(self.update_time_read_card, 0.5)
         
         return super().on_enter(*args)
 
