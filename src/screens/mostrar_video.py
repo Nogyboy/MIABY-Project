@@ -17,6 +17,9 @@ class MostrarVideoScreen(Screen):
         super().__init__(**kw)
         self.app = App.get_running_app()
         self.video = Video(pos=self.pos, size=self.size)
+        self.video.bind(
+               position=self.on_position_change
+                )        
         self.select_random_video()
         self.add_widget(self.video)
     
@@ -32,14 +35,14 @@ class MostrarVideoScreen(Screen):
         return super().on_enter(*args)
 
     def on_leave(self, *args):
-        self.stop_play_video("stop")
+        self.video.state = "stop"
         self.video.unload()
         return super().on_leave(*args)
 
-    def stop_play_video(self, option):
-        self.video.state = option
-
-    # @TODO Implementar el regreso al menu modo_juego cuando se termina el video
+    def on_position_change(self, instance, value):
+        goal = self.video.duration-1
+        if value>goal:
+            self.app.sm.current = "modo_juego"
 
 
     
