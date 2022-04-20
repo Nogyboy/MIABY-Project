@@ -71,6 +71,7 @@ class InicioScreen(Screen):
         return super().on_enter(*args)
     
     def on_pre_leave(self, *args):
+        self.event.cancel()
         if self.app.audio_file:
             self.app.stop_audio()
         return super().on_pre_leave(*args)
