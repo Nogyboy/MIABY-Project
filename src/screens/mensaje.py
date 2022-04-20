@@ -19,8 +19,6 @@ class MensajeScreen(Screen, FloatLayout):
         self.image_vid_esp = Video(source=self.app.get_path_resources('español','mensaje.mp4'), pos=self.pos, size=self.size, nocache=True, state="stop", options = {'eos': 'loop'}, allow_stretch=True)
         self.image_vid_en = Video(source=self.app.get_path_resources('ingles','mensaje.mp4'),pos=self.pos, size=self.size, nocache=True, state="stop", options = {'eos': 'loop'}, allow_stretch=True)
         
-
-
     def update_time(self, sec):
         """
         Contador de tiempo de visualización del mensaje.

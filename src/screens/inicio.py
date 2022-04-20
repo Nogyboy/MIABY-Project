@@ -2,6 +2,7 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.app import App
 from kivy.properties import (ObjectProperty)
+from kivy.clock import Clock
 
 import json
 
@@ -13,6 +14,8 @@ class InicioScreen(Screen):
 
     esp_boton = ObjectProperty(None)
     en_boton = ObjectProperty(None)
+    event = None
+    secs = 0
     
     def __init__(self, **kw):
         super().__init__(**kw)
@@ -48,6 +51,15 @@ class InicioScreen(Screen):
         self.esp_boton.reload()
         self.en_boton.reload()
 
+    def update_time(self, sec):
+        """
+        Contador de tiempo de visualización del mensaje.
+        """
+        self.secs = self.secs+1
+        if self.secs == 30:
+            self.event.cancel()
+            self.secs = 0
+            self.app.sm.current = "inactividad"
 
     def on_enter(self, *args):
         try:
@@ -55,7 +67,7 @@ class InicioScreen(Screen):
             self.app.play_audio()
         except AttributeError:
             self.on_enter()
-        # @TODO Implementar el salvapantallas con el Clock
+        self.event = Clock.schedule_interval(self.update_time, 1)
         return super().on_enter(*args)
     
     def on_pre_leave(self, *args):

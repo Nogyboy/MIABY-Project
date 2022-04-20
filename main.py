@@ -7,13 +7,12 @@ Filas = [26,19,13,6]
 Columnas = [12,16,20,21]
 
 # Inicializar los pines GPIO
-
 for row in Filas:
     GPIO.setup(row, GPIO.OUT)
 
-for j in range(7):
+for j in range(4):
     GPIO.setup(Columnas[j], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-    
+
 # Configuración Local de la Aplicación
 from kivy.config import Config
 
@@ -31,7 +30,6 @@ VIDEO_PATH = BASE_DIR.joinpath('resources', 'video')
 
 Config.read(KIVY_CONFIG_PATH)
 
-
 # Screen
 from src.screens.modo_juego import ModoJuegoScreen
 from src.screens.inicio import InicioScreen
@@ -40,7 +38,7 @@ from src.screens.ingresar_texto import IngresarTextoScreen
 from src.screens.mensaje import MensajeScreen
 from src.screens.mostrar_video import MostrarVideoScreen
 from src.screens.bienvenida import BienvenidaScreen
-
+from src.screens.salvapantalla import SalvaPantallaScreen
 
 # App
 from kivy.core.window import Window
@@ -68,13 +66,14 @@ class MIABYApp(App):
     ingresar_texto_screen = ObjectProperty(None)
     mensaje_screen = ObjectProperty(None)
     video_screen = ObjectProperty(None)
+    salvapantalla_screen = ObjectProperty(None)
     
     def __init__(self, **kwargs):
         # Definir la escucha del teclado
         self._keyboard = Window.request_keyboard(
             self._keyboard_closed, self.sm, 'text')
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
-        Clock.schedule_interval(self.read_keayboard, 1.0/10.0)
+        Clock.schedule_interval(self.read_keayboard, 0.30)
         super().__init__(**kwargs)
 
     def build_config(self, config):
@@ -115,6 +114,7 @@ class MIABYApp(App):
         self.ingresar_texto_screen = IngresarTextoScreen(name="ingresar_texto")
         self.mensaje_screen = MensajeScreen(name="mensaje")
         self.video_screen = MostrarVideoScreen(name="video")
+        self.salvapantalla_screen = SalvaPantallaScreen(name="inactividad")
 
         self.sm.add_widget(self.bienvenida_screen)
         self.sm.add_widget(self.inicio_screen)
@@ -123,6 +123,7 @@ class MIABYApp(App):
         self.sm.add_widget(self.ingresar_texto_screen)
         self.sm.add_widget(self.mensaje_screen)
         self.sm.add_widget(self.video_screen)
+        self.sm.add_widget(self.salvapantalla_screen)
 
         self.sm.current = "bienvenida"  # Pantalla inicial
         return self.sm
@@ -201,6 +202,8 @@ class MIABYApp(App):
 
             elif current_screen == "video":
                 self.video_screen.stop_play_video("play")
+            elif current_screen == "inactividad":
+                self.sm.current = "inicio"
 
         elif key == "left":# Botón de regresar
             if current_screen == "modo_juego":
@@ -276,7 +279,7 @@ class MIABYApp(App):
             coordenada+=1
         GPIO.output(fila,GPIO.LOW)
 
-    def read_keayboard(self):
+    def read_keayboard(self, *args):
         key_map = (
             ("1" , "2" , "3" , "up"),
         ("4" , "5" , "6" , "down" ),
