@@ -70,7 +70,7 @@ class LecturaTarjetaScreen(Screen):
         elif self.app.inicio_option == "ingles":
             self.image_vid_en.state = "play"
 
-        self.app.load_audio("9.wav")
+        self.app.load_audio("7.wav")
         self.app.play_audio()
 
         self.event = Clock.schedule_interval(self.update_time_read_card, 0.5)
