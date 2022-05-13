@@ -1,3 +1,4 @@
+from inspect import Attribute
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.app import App
@@ -71,7 +72,10 @@ class InicioScreen(Screen):
         return super().on_enter(*args)
     
     def on_pre_leave(self, *args):
-        self.event.cancel()
+        try:
+            self.event.cancel()
+        except AttributeError:
+            print("Instancia no creada...")
         if self.app.audio_file:
             self.app.stop_audio()
         return super().on_pre_leave(*args)

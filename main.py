@@ -207,7 +207,7 @@ class MIABYApp(App):
                     self.play_audio()
 
             elif current_screen == "video":
-                self.video_screen.stop_play_video("play")
+                self.video_screen.video.state = "play"
             elif current_screen == "inactividad":
                 self.sm.current = "inicio"
 
@@ -215,7 +215,10 @@ class MIABYApp(App):
             if current_screen == "modo_juego":
                 self.sm.current = "inicio"
             elif current_screen == "lectura_tarjeta":
-                self.lectura_tarjeta_screen.event.cancel()
+                try:
+                    self.lectura_tarjeta_screen.event.cancel()
+                except AttributeError:
+                    print("Muy rápido la instacia no se crea.")
                 self.sm.current = "modo_juego"
             elif current_screen == "ingresar_texto":
                 self.sm.current = "lectura_tarjeta"
@@ -223,7 +226,7 @@ class MIABYApp(App):
                 self.sm.current = "modo_juego"
         elif key == "right":
             if current_screen == "video":
-                self.video_screen.stop_play_video("pause")
+                self.video_screen.video.state = "pause"
         else:
             if current_screen == "ingresar_texto":
                 self.ingresar_texto_screen.validate_word_entry(key.upper())

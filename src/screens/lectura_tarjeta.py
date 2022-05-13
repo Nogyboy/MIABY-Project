@@ -56,9 +56,13 @@ class LecturaTarjetaScreen(Screen):
         self.secs = self.secs+1
         id, text = self.reader.read_no_block()
         if self.secs == 40:
-            self.event.cancel()
+            try:
+                self.event.cancel()
+            except AttributeError:
+                print("No existe la instancia...")
             self.secs = 0
             self.app.sm.current = "modo_juego"
+
         elif id != None:
             self.event.cancel()
             self.secs = 0
