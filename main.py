@@ -5,15 +5,15 @@ if KEYBOARD_MODE:
     GPIO.setmode(GPIO.BCM)
 
 #Definición de lineas y columnas
-Filas = [26,19,13,6]
-Columnas = [12,16,20,21]
+Filas = [19,26, 13, 6]
+Columnas = [17, 27, 22,1 ,12, 16,20,23]
 
 if KEYBOARD_MODE:
     # Inicializar los pines GPIO
     for row in Filas:
         GPIO.setup(row, GPIO.OUT)
 
-    for j in range(4):
+    for j in range(8):
         GPIO.setup(Columnas[j], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 # Configuración Local de la Aplicación
@@ -185,7 +185,9 @@ class MIABYApp(App):
                 self.lectura_tarjeta_screen.update_background_image(self.inicio_option)
                 self.ingresar_texto_screen.update_background_image(self.inicio_option)
                 self.mensaje_screen.update_gif(self.inicio_option)
-                self.sm.current = "modo_juego"                
+                self.sm.current = "modo_juego"
+                # self.load_audio("2.wav", bind=True)
+                # self.play_audio()               
 
             elif current_screen == "modo_juego":
                 if self.current_option_mode == "observar":
@@ -270,6 +272,8 @@ class MIABYApp(App):
             elif self.current_option_mode == "interactuar":
                 self.sm.current = "lectura_tarjeta"
                 self.audio_file.unload()
+        # elif self.audio_file and current_screen == "inicio":
+        #     self.sm.current = "modo_juego"
 
     def read_coordinate(self, fila, caracteres):
         """
@@ -285,10 +289,10 @@ class MIABYApp(App):
 
     def read_keayboard(self, *args):
         key_map = (
-            ("1" , "2" , "3" , "up"),
-        ("4" , "5" , "6" , "down" ),
-        ("7" , "8" , "9" , "left" ),
-        ("*" , "0" , "right" , "enter" )
+            ("A", "B", "C", "D", "E", "F", "G", "up"),
+        ("H", "I", "J", "K", "L", "M", "N", "down"),
+        ("O", "P", "Q", "R", "S", "T", "Ñ", "enter"),
+        ("left","U", "V", "W", "X", "Y", "Z", "right")
         )
         arrow_keys = 0
         for fila in Filas:
