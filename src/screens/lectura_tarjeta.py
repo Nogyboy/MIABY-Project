@@ -2,7 +2,11 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.app import App
 from kivy.uix.video import Video
-from mfrc522 import SimpleMFRC522
+
+from src.screens import READ_CAR_MODE
+
+if READ_CAR_MODE:
+    from mfrc522 import SimpleMFRC522
 from kivy.clock import Clock
 
 Builder.load_file('src/screens/lectura_tarjeta.kv')
@@ -11,7 +15,8 @@ Builder.load_file('src/screens/lectura_tarjeta.kv')
 class LecturaTarjetaScreen(Screen):
     
     before_lang = ""
-    reader = SimpleMFRC522()
+    if READ_CAR_MODE:
+        reader = SimpleMFRC522()
     secs = 0
     event = None
 
@@ -70,10 +75,14 @@ class LecturaTarjetaScreen(Screen):
         elif self.app.inicio_option == "ingles":
             self.image_vid_en.state = "play"
 
-        self.app.load_audio("9.wav")
+        self.app.load_audio("7.wav")
         self.app.play_audio()
+        if READ_CAR_MODE:
+            self.event = Clock.schedule_interval(self.update_time_read_card, 0.5)
+        else:
+            self.select_word(1)
+            self.app.sm.current = "ingresar_texto"
 
-        self.event = Clock.schedule_interval(self.update_time_read_card, 0.5)
         
         return super().on_enter(*args)
 

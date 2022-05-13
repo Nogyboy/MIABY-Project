@@ -53,7 +53,7 @@ class ModoJuegoScreen(Screen):
         self.interactuar_boton.reload()
 
     def on_enter(self, *args):
-        self.app.load_audio("4.wav")
+        self.app.load_audio("3.wav")
         self.app.play_audio()
         return super().on_enter(*args)
     

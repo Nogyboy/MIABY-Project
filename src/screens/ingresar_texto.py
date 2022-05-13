@@ -44,7 +44,7 @@ class IngresarTextoScreen(Screen):
     
     def on_enter(self, *args):
         try:
-            self.app.load_audio("10.wav")
+            self.app.load_audio("8.wav")
             self.app.play_audio()
         except AttributeError:
             self.on_enter()

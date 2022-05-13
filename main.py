@@ -1,17 +1,20 @@
-import RPi.GPIO as GPIO
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
+KEYBOARD_MODE = False
+if KEYBOARD_MODE:
+    import RPi.GPIO as GPIO
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
 
 #Definición de lineas y columnas
 Filas = [26,19,13,6]
 Columnas = [12,16,20,21]
 
-# Inicializar los pines GPIO
-for row in Filas:
-    GPIO.setup(row, GPIO.OUT)
+if KEYBOARD_MODE:
+    # Inicializar los pines GPIO
+    for row in Filas:
+        GPIO.setup(row, GPIO.OUT)
 
-for j in range(4):
-    GPIO.setup(Columnas[j], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    for j in range(4):
+        GPIO.setup(Columnas[j], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 # Configuración Local de la Aplicación
 from kivy.config import Config
@@ -73,7 +76,8 @@ class MIABYApp(App):
         self._keyboard = Window.request_keyboard(
             self._keyboard_closed, self.sm, 'text')
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
-        Clock.schedule_interval(self.read_keayboard, 0.30)
+        if KEYBOARD_MODE:
+            Clock.schedule_interval(self.read_keayboard, 0.30)
         super().__init__(**kwargs)
 
     def build_config(self, config):
@@ -187,17 +191,17 @@ class MIABYApp(App):
                 if self.current_option_mode == "observar":
                     self.video_screen.select_random_video()
                     self.stop_audio()
-                    self.load_audio("7.wav", bind=True)
+                    self.load_audio("5.wav", bind=True)
                     self.play_audio()
                 elif self.current_option_mode == "aprender":
                     self.video_screen.select_random_video()
                     self.stop_audio()
-                    self.load_audio("5.wav", bind=True)
+                    self.load_audio("4.wav", bind=True)
                     self.play_audio()
  
                 elif self.current_option_mode == "interactuar":
                     self.stop_audio()
-                    self.load_audio("8.wav", bind=True)
+                    self.load_audio("6.wav", bind=True)
                     self.play_audio()
 
             elif current_screen == "video":
