@@ -1,7 +1,7 @@
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.app import App
-from kivy.uix.video import Video
+from kivy.uix.image import Image
 
 from src.screens import READ_CAR_MODE
 
@@ -14,7 +14,6 @@ Builder.load_file('src/screens/lectura_tarjeta.kv')
 
 class LecturaTarjetaScreen(Screen):
     
-    before_lang = ""
     if READ_CAR_MODE:
         reader = SimpleMFRC522()
     secs = 0
@@ -23,24 +22,15 @@ class LecturaTarjetaScreen(Screen):
     def __init__(self, **kw):
         super().__init__(**kw)
         self.app = App.get_running_app()
-        self.image_vid_esp = Video(source=self.app.get_path_resources('español','leer_tarjeta.mp4'), pos=self.pos, size=self.size, nocache=True, state="stop", options = {'eos': 'loop'}, allow_stretch=True)
-        self.image_vid_en = Video(source=self.app.get_path_resources('ingles','leer_tarjeta.mp4'),pos=self.pos, size=self.size, nocache=True, state="stop", options = {'eos': 'loop'}, allow_stretch=True)
-        
+        self.img_lectura = Image(source=self.app.get_path_resources("español","leer_tarjeta.png"), pos=self.pos, size=self.size)
+        self.add_widget(self.img_lectura)   
 
     def update_background_image(self, lang):
         """
         Actualiza la imagen de fondo en función del idioma.
         """
-        if lang =="español":
-            if not(self.before_lang == lang):
-                self.remove_widget(self.image_vid_en)
-                self.add_widget(self.image_vid_esp)
-            self.before_lang = lang
-        elif lang == "ingles":
-            if not(self.before_lang == lang):
-                self.add_widget(self.image_vid_en)
-                self.remove_widget(self.image_vid_esp)
-            self.before_lang = lang
+        self.img_lectura.source = self.app.get_path_resources(lang,"leer_tarjeta.png")
+        self.img_lectura.reload()
 
     def select_word(self, code):
         """
@@ -72,12 +62,8 @@ class LecturaTarjetaScreen(Screen):
 
     def on_enter(self, *args):
         """
-        Al entrar en la pantalla iniciar la animacion
+        Al entrar reproducir el audio e iniciar la lectura de la tarjeta
         """
-        if self.app.inicio_option == "español":
-            self.image_vid_esp.state = "play"
-        elif self.app.inicio_option == "ingles":
-            self.image_vid_en.state = "play"
 
         self.app.load_audio("7.wav")
         self.app.play_audio()
@@ -94,11 +80,3 @@ class LecturaTarjetaScreen(Screen):
         if self.app.audio_file:
             self.app.stop_audio()
         return super().on_pre_leave(*args)
-
-    def on_leave(self, *args):
-        """
-        Al salir de la pantalla detener la animacion
-        """
-        self.image_vid_esp.state = "stop"
-        self.image_vid_en.state = "stop"
-        return super().on_leave(*args)

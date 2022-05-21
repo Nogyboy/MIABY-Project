@@ -57,7 +57,7 @@ class InicioScreen(Screen):
         Contador de tiempo de visualización del mensaje.
         """
         self.secs = self.secs+1
-        if self.secs == 30:
+        if self.secs == 120:
             self.event.cancel()
             self.secs = 0
             self.app.sm.current = "inactividad"

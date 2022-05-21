@@ -33,6 +33,8 @@ VIDEO_PATH = BASE_DIR.joinpath('resources', 'video')
 
 Config.read(KIVY_CONFIG_PATH)
 
+import time
+
 # Screen
 from src.screens.modo_juego import ModoJuegoScreen
 from src.screens.inicio import InicioScreen
@@ -77,7 +79,7 @@ class MIABYApp(App):
             self._keyboard_closed, self.sm, 'text')
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
         if KEYBOARD_MODE:
-            Clock.schedule_interval(self.read_keayboard, 0.30)
+            Clock.schedule_interval(self.read_keayboard, 0.25)
         super().__init__(**kwargs)
 
     def build_config(self, config):
@@ -185,9 +187,7 @@ class MIABYApp(App):
                 self.lectura_tarjeta_screen.update_background_image(self.inicio_option)
                 self.ingresar_texto_screen.update_background_image(self.inicio_option)
                 self.mensaje_screen.update_gif(self.inicio_option)
-                self.sm.current = "modo_juego"
-                # self.load_audio("2.wav", bind=True)
-                # self.play_audio()               
+                self.sm.current = "modo_juego"            
 
             elif current_screen == "modo_juego":
                 if self.current_option_mode == "observar":
@@ -287,6 +287,7 @@ class MIABYApp(App):
         for pin in Columnas:
             if bool(GPIO.input(pin)):
                 self.manage_screens(key=caracteres[coordenada])
+                time.sleep(0.3)
             coordenada+=1
         GPIO.output(fila,GPIO.LOW)
 
