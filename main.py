@@ -1,4 +1,4 @@
-KEYBOARD_MODE = False
+KEYBOARD_MODE = True
 if KEYBOARD_MODE:
     import RPi.GPIO as GPIO
     GPIO.setwarnings(False)
