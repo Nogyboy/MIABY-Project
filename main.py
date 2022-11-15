@@ -1,10 +1,13 @@
-KEYBOARD_MODE = True
+# ------------------ INICIALIZACION DE TECLADO -----------------
+# Variable utilizada para configurar los PINs de la rasperry pi
+# de esta manera se puede leer las entradas de todos los botones
+KEYBOARD_MODE = False
 if KEYBOARD_MODE:
     import RPi.GPIO as GPIO
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
 
-#Definición de lineas y columnas
+#Definición de lineas y columnas del teclado
 Filas = [19,26, 13, 6]
 Columnas = [17, 27, 22,1 ,12, 16,20,23]
 
@@ -15,6 +18,9 @@ if KEYBOARD_MODE:
 
     for j in range(8):
         GPIO.setup(Columnas[j], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+
+#--------------- APLICACION KIVY ---------------------------------
 
 # Configuración Local de la Aplicación
 from kivy.config import Config
@@ -35,7 +41,7 @@ Config.read(KIVY_CONFIG_PATH)
 
 import time
 
-# Screen
+# Pantallas
 from src.screens.modo_juego import ModoJuegoScreen
 from src.screens.inicio import InicioScreen
 from src.screens.lectura_tarjeta import LecturaTarjetaScreen
