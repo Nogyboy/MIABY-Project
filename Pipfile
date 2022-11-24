@@ -6,13 +6,12 @@ name = "pypi"
 [packages]
 kivy = {extras = ["full"], version = "*"}
 mfrc522 = "*"
-icecream = "*"
 
 [dev-packages]
 autopep8 = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.10"
 
 
 # Install on Raspberry

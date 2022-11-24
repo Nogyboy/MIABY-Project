@@ -2,6 +2,7 @@
 # Variable utilizada para configurar los PINs de la rasperry pi
 # de esta manera se puede leer las entradas de todos los botones
 KEYBOARD_MODE = False
+
 if KEYBOARD_MODE:
     import RPi.GPIO as GPIO
     GPIO.setwarnings(False)
@@ -9,7 +10,7 @@ if KEYBOARD_MODE:
 
 #Definición de lineas y columnas del teclado
 Filas = [19,26, 13, 6]
-Columnas = [17, 27, 22,1 ,12, 16,20,23]
+Columnas = [17, 27, 22,1 ,12, 16,20,23] 
 
 if KEYBOARD_MODE:
     # Inicializar los pines GPIO
@@ -81,12 +82,14 @@ class MIABYApp(App):
     
     def __init__(self, **kwargs):
         # Definir la escucha del teclado
-        self._keyboard = Window.request_keyboard(
-            self._keyboard_closed, self.sm, 'text')
-        self._keyboard.bind(on_key_down=self._on_keyboard_down)
         if KEYBOARD_MODE:
             Clock.schedule_interval(self.read_keayboard, 0.25)
+        else:
+            self._keyboard = Window.request_keyboard(
+            self._keyboard_closed, self.sm, 'text')
+            self._keyboard.bind(on_key_down=self._on_keyboard_down)
         super().__init__(**kwargs)
+            
 
     def build_config(self, config):
         """
@@ -100,6 +103,7 @@ class MIABYApp(App):
             'log_level': 'info',
             'log_name': "kivy_%y-%m-%d_%_.txt"
         })
+
         config.setdefaults('graphics', {
             'borderless': 1,
             'windows_state': 'visible',
@@ -241,29 +245,31 @@ class MIABYApp(App):
         """
         Cargar audio
         """
-        self.audio_file = SoundLoader.load(self.get_path_resources("audio", file))
-        if bind:
-            self.audio_file.bind(on_stop=self.do_after_stop_audio)
-        else:
-            self.audio_file.unbind()
-        
+        if KEYBOARD_MODE:
+            self.audio_file = SoundLoader.load(self.get_path_resources("audio", file))
+            if bind:
+                self.audio_file.bind(on_stop=self.do_after_stop_audio)
+            else:
+                self.audio_file.unbind()
 
     def play_audio(self):
         """
         Reproducir audio
         """
-        if self.audio_file:
-            self.audio_file.play()
+        if KEYBOARD_MODE:
+            if self.audio_file:
+                self.audio_file.play()
             
 
     def stop_audio(self):
         """
         Detener audio
         """
-        try:   
-            if self.audio_file:
-                self.audio_file.stop()
-                self.audio_file.unload()
+        try:
+            if KEYBOARD_MODE:
+                if self.audio_file:
+                    self.audio_file.stop()
+                    self.audio_file.unload()
         except AttributeError:
             print("Audio no cargado.")
         except Exception as e:
@@ -281,8 +287,6 @@ class MIABYApp(App):
             elif self.current_option_mode == "interactuar":
                 self.sm.current = "lectura_tarjeta"
                 self.audio_file.unload()
-        # elif self.audio_file and current_screen == "inicio":
-        #     self.sm.current = "modo_juego"
 
     def read_coordinate(self, fila, caracteres):
         """
