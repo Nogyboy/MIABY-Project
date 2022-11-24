@@ -1,232 +1,189 @@
-# ------------------ INICIALIZACION DE TECLADO -----------------
-# Variable utilizada para configurar los PINs de la rasperry pi
-# de esta manera se puede leer las entradas de todos los botones
-KEYBOARD_MODE = False
-
-if KEYBOARD_MODE:
-    import RPi.GPIO as GPIO
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BCM)
-
-#Definición de lineas y columnas del teclado
-Filas = [19,26, 13, 6]
-Columnas = [17, 27, 22,1 ,12, 16,20,23] 
-
-if KEYBOARD_MODE:
-    # Inicializar los pines GPIO
-    for row in Filas:
-        GPIO.setup(row, GPIO.OUT)
-
-    for j in range(8):
-        GPIO.setup(Columnas[j], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
-
-#--------------- APLICACION KIVY ---------------------------------
-
-# Configuración Local de la Aplicación
+from kivy.core.audio import SoundLoader
+from kivy.clock import Clock
+from kivy.uix.screenmanager import ScreenManager
+from kivy.app import App
+from kivy.properties import (ObjectProperty)
+from kivy.core.window import Window
+from src.screens.screensaver import ScreenSaverScreen
+from src.screens.welcome import WelcomeScreen
+from src.screens.show_video import ShowVideoScreen
+from src.screens.message import MessageScreen
+from src.screens.text_input import TextInputScreen
+from src.screens.read_card import ReadCardScreen
+from src.screens.home import HomeScreen
+from src.screens.game_mode import GameModeScreen
+import time
 from kivy.config import Config
-
 from pathlib import Path
 
+# BASE DIRECTORY
 BASE_DIR = Path(__file__).resolve().parent
 
+# Load app's configuration
 KIVY_CONFIG_PATH = str(BASE_DIR.joinpath('miaby.ini'))
-
-IMG_PATH = BASE_DIR.joinpath('resources', 'img')
-
-AUDIO_PATH = BASE_DIR.joinpath('resources', 'audios')
-
-VIDEO_PATH = BASE_DIR.joinpath('resources', 'video')
-
 Config.read(KIVY_CONFIG_PATH)
 
-import time
-
-# Pantallas
-from src.screens.modo_juego import ModoJuegoScreen
-from src.screens.inicio import InicioScreen
-from src.screens.lectura_tarjeta import LecturaTarjetaScreen
-from src.screens.ingresar_texto import IngresarTextoScreen
-from src.screens.mensaje import MensajeScreen
-from src.screens.mostrar_video import MostrarVideoScreen
-from src.screens.bienvenida import BienvenidaScreen
-from src.screens.salvapantalla import SalvaPantallaScreen
-
-# App
-from kivy.core.window import Window
-from kivy.properties import (ObjectProperty)
-from kivy.app import App
-from kivy.uix.screenmanager import ScreenManager
-from kivy.clock import Clock
-from kivy.core.audio import SoundLoader
 
 class MIABYApp(App):
 
-    words = {}  # Conjunto de palabras según el idioma
-    sm = ScreenManager()  # Manejador de pantallas
-    inicio_option = "español"  # Opción de la pantalla Inicio
-    current_option_mode = "observar"  # Opción actual del modo de juego
-    modo_option = ("observar", "aprender", "interactuar")
-    menu_settings_state = True  # Estado del Menú de Configuraciones
-    word_selected = "" # Palabra seleccionada según el idioma
-    audio_file = None # Archivo de audio
+    menu_settings_state = True  # State of kivy menu built-in
+    sm = ScreenManager()
 
-    bienvenida_screen = ObjectProperty(None)
-    inicio_screen = ObjectProperty(None)
-    modo_juego_screen = ObjectProperty(None)
-    lectura_tarjeta_screen = ObjectProperty(None)
-    ingresar_texto_screen = ObjectProperty(None)
-    mensaje_screen = ObjectProperty(None)
-    video_screen = ObjectProperty(None)
-    salvapantalla_screen = ObjectProperty(None)
-    
+    modo_option = ("observe", "learning", "interact")
+    words = {}  # Words selected base on language
+    word_selected = ""
+
+    lang_option = "spanish"
+    option_game_mode = "observe"
+
+    audio_file = None
+
+    # Screens variables
+    welcome_screen = ObjectProperty(None)
+    home_screen = ObjectProperty(None)
+    game_mode_screen = ObjectProperty(None)
+    read_card_screen = ObjectProperty(None)
+    text_input_screen = ObjectProperty(None)
+    message_screen = ObjectProperty(None)
+    show_video_screen = ObjectProperty(None)
+    screensaver_screen = ObjectProperty(None)
+
     def __init__(self, **kwargs):
-        # Definir la escucha del teclado
-        if KEYBOARD_MODE:
-            Clock.schedule_interval(self.read_keayboard, 0.25)
+        super().__init__(**kwargs)
+        if self.config.get('extras', 'mode_app') == "board":
+            self.gpio_set_up()
+            Clock.schedule_interval(self.read_keyboard, 0.25)
         else:
             self._keyboard = Window.request_keyboard(
-            self._keyboard_closed, self.sm, 'text')
+                self._keyboard_closed, self.sm, 'text')
             self._keyboard.bind(on_key_down=self._on_keyboard_down)
-        super().__init__(**kwargs)
-            
-
-    def build_config(self, config):
-        """
-        Construir un archivo de configuraciones local .ini de la aplicación.
-
-        """
-        config.setdefaults('kivy', {
-            'default_font': "['Roboto', 'data/fonts/Roboto-Regular.ttf', 'data/fonts/Roboto-Italic.ttf', 'data/fonts/Roboto-Bold.ttf', 'data/fonts/Roboto-BoldItalic.ttf']",
-            'log_dir': 'logs',
-            'log_enable': 1,
-            'log_level': 'info',
-            'log_name': "kivy_%y-%m-%d_%_.txt"
-        })
-
-        config.setdefaults('graphics', {
-            'borderless': 1,
-            'windows_state': 'visible',
-            'fullscreen': 'auto',
-            'maxfps': 60,
-            'show_cursor': 0,
-            'resizable': 1,
-        })
 
     def build(self):
         """
-           Construcción de interfaces
-            - Inicio
-            - Modo de Juego
-            - Modo - Observar
-            - Modo - Aprender
-            - Modo - Practicar
+           Build screens
+            - Home
+            - Game Mode
+            - Mode - Observe
+            - Mode - Learning
+            - Mode - Interact
         """
 
-        self.bienvenida_screen = BienvenidaScreen(name="bienvenida")
-        self.inicio_screen = InicioScreen(name='inicio')
-        self.modo_juego_screen = ModoJuegoScreen(name='modo_juego')
-        self.lectura_tarjeta_screen = LecturaTarjetaScreen(name="lectura_tarjeta")
-        self.ingresar_texto_screen = IngresarTextoScreen(name="ingresar_texto")
-        self.mensaje_screen = MensajeScreen(name="mensaje")
-        self.video_screen = MostrarVideoScreen(name="video")
-        self.salvapantalla_screen = SalvaPantallaScreen(name="inactividad")
+        self.welcome_screen = WelcomeScreen(name="welcome")
+        self.home_screen = HomeScreen(name='home')
+        self.game_mode_screen = GameModeScreen(name='game_mode')
+        self.read_card_screen = ReadCardScreen(name="read_card")
+        self.text_input_screen = TextInputScreen(name="text_input")
+        self.message_screen = MessageScreen(name="message")
+        self.show_video_screen = ShowVideoScreen(name="show_video")
+        self.screensaver_screen = ScreenSaverScreen(name="inactivity")
 
-        self.sm.add_widget(self.bienvenida_screen)
-        self.sm.add_widget(self.inicio_screen)
-        self.sm.add_widget(self.modo_juego_screen)
-        self.sm.add_widget(self.lectura_tarjeta_screen)
-        self.sm.add_widget(self.ingresar_texto_screen)
-        self.sm.add_widget(self.mensaje_screen)
-        self.sm.add_widget(self.video_screen)
-        self.sm.add_widget(self.salvapantalla_screen)
+        self.sm.add_widget(self.welcome_screen)
+        self.sm.add_widget(self.home_screen)
+        self.sm.add_widget(self.game_mode_screen)
+        self.sm.add_widget(self.read_card_screen)
+        self.sm.add_widget(self.text_input_screen)
+        self.sm.add_widget(self.message_screen)
+        self.sm.add_widget(self.show_video_screen)
+        self.sm.add_widget(self.screensaver_screen)
 
-        self.sm.current = "bienvenida"  # Pantalla inicial
+        self.sm.current = "welcome"  # First screen
         return self.sm
 
-    def get_path_resources(self, tipo, file):
+    def gpio_set_up(self):
         """
-        Generar el path completo de los recursos para cada S.O.
+        Set up each GPIO of Raspberry Pi BOARD in case mode_app == "desktop".
         """
-        if tipo == "words":
-            return str(BASE_DIR.joinpath("resources", "words", file))
+        import RPi.GPIO as GPIO
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
 
-        elif tipo == "audio":
-            return str(AUDIO_PATH.joinpath(self.inicio_option, file))
+        rows = [19, 26, 13, 6]
+        columns = [17, 27, 22, 1, 12, 16, 20, 23]
 
-        elif tipo == "video":
-            return str(VIDEO_PATH.joinpath(self.current_option_mode, self.inicio_option, file))
+        for row in rows:
+            GPIO.setup(row, GPIO.OUT)
 
-        else:
-            return str(IMG_PATH.joinpath(tipo, file))
+        for j in range(8):
+            GPIO.setup(columns[j], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+    def get_path_resources(self, res_type, file):
+        """
+        Get paths for resources.
+        """
+        paths = {
+            "words": str(BASE_DIR.joinpath("resources", "words", file)),
+            "audio": str(BASE_DIR.joinpath('resources', 'audios').joinpath(self.lang_option, file)),
+            "video": str(BASE_DIR.joinpath('resources', 'video').joinpath(self.option_game_mode, self.lang_option, file)),
+            "images": str(BASE_DIR.joinpath('resources', 'img').joinpath(self.lang_option, file))
+        }
+
+        return paths[res_type]
 
     def manage_screens(self, key):
         """
-        Gestionar el comportamiento de la interfaz.
+        Manage app behavior.
         """
         current_screen = self.sm.current_screen.name
-        if key == "up" or key == "down":  # Cambiar la opcion de la pantalla de inicio y modo de juego
-            if current_screen == "inicio":
-                if self.inicio_option == "español":
-                    self.inicio_option = "ingles"
-                    self.inicio_screen.update_image_buttons_language(
-                        self.inicio_option)
-                else:
-                    self.inicio_option = "español"
-                    self.inicio_screen.update_image_buttons_language(
-                        self.inicio_option)
-            if current_screen == "modo_juego":
-                if key == "up":                    
-                    pos = self.modo_option.index(self.current_option_mode)-1
-                    self.current_option_mode = self.modo_option[2] if pos < 0 else self.modo_option[pos]
-                elif key == "down":
-                    pos = self.modo_option.index(self.current_option_mode)+1
-                    self.current_option_mode = self.modo_option[0] if pos > 2 else self.modo_option[pos]
-                
-                self.modo_juego_screen.update_image_buttons_mode(
-                    self.current_option_mode, self.inicio_option)
+        if key == "up" or key == "down":
+            if current_screen == "home":
+                self.home_screen.update_image_buttons_language(
+                    "english" if self.lang_option == "spanish" else "spanish")
 
-        elif key == "enter":# Seleccionar el idioma y modo de juego
+            elif current_screen == "game_mode":
+                if key == "up":
+                    pos = self.modo_option.index(self.option_game_mode)-1
+                    # @TODO Use negative indexes
+                    self.option_game_mode = self.modo_option[2] if pos < 0 else self.modo_option[pos]
+                elif key == "down":
+                    # @TODO Refactor with an if on 2 index
+                    pos = self.modo_option.index(self.option_game_mode)+1
+                    self.option_game_mode = self.modo_option[0] if pos > 2 else self.modo_option[pos]
+
+                self.game_mode_screen.update_image_buttons_mode(
+                    self.option_game_mode, self.lang_option)
+
+        elif key == "enter":  # Seleccionar el idioma y modo de juego
             if current_screen == "bienvenida":
                 self.sm.current = "inicio"
 
             elif current_screen == "inicio":
-                self.inicio_screen.choose_language(lang=self.inicio_option)
-                self.modo_juego_screen.update_image_buttons_mode(
-                    self.current_option_mode, self.inicio_option)
-                self.lectura_tarjeta_screen.update_background_image(self.inicio_option)
-                self.ingresar_texto_screen.update_background_image(self.inicio_option)
-                self.mensaje_screen.update_gif(self.inicio_option)
-                self.sm.current = "modo_juego"            
+                self.home_screen.choose_language(lang=self.lang_option)
+                self.game_mode_screen.update_image_buttons_mode(
+                    self.option_game_mode, self.lang_option)
+                self.read_card_screen.update_background_image(self.lang_option)
+                self.text_input_screen.update_background_image(
+                    self.lang_option)
+                self.message_screen.update_gif(self.lang_option)
+                self.sm.current = "modo_juego"
 
             elif current_screen == "modo_juego":
-                if self.current_option_mode == "observar":
-                    self.video_screen.select_random_video()
+                if self.option_game_mode == "observar":
+                    self.show_video_screen.select_random_video()
                     self.stop_audio()
                     self.load_audio("5.wav", bind=True)
                     self.play_audio()
-                elif self.current_option_mode == "aprender":
-                    self.video_screen.select_random_video()
+                elif self.option_game_mode == "aprender":
+                    self.show_video_screen.select_random_video()
                     self.stop_audio()
                     self.load_audio("4.wav", bind=True)
                     self.play_audio()
- 
-                elif self.current_option_mode == "interactuar":
+
+                elif self.option_game_mode == "interactuar":
                     self.stop_audio()
                     self.load_audio("6.wav", bind=True)
                     self.play_audio()
 
             elif current_screen == "video":
-                self.video_screen.video.state = "play"
+                self.show_video_screen.video.state = "play"
             elif current_screen == "inactividad":
                 self.sm.current = "inicio"
 
-        elif key == "left":# Botón de regresar
+        elif key == "left":  # Botón de regresar
             if current_screen == "modo_juego":
                 self.sm.current = "inicio"
             elif current_screen == "lectura_tarjeta":
                 try:
-                    self.lectura_tarjeta_screen.event.cancel()
+                    self.read_card_screen.event.cancel()
                 except AttributeError:
                     print("Muy rápido la instacia no se crea.")
                 self.sm.current = "modo_juego"
@@ -236,17 +193,18 @@ class MIABYApp(App):
                 self.sm.current = "modo_juego"
         elif key == "right":
             if current_screen == "video":
-                self.video_screen.video.state = "pause"
+                self.show_video_screen.video.state = "pause"
         else:
-            if current_screen == "ingresar_texto":
-                self.ingresar_texto_screen.validate_word_entry(key.upper())
+            if current_screen == "text_input":
+                self.text_input_screen.validate_word_entry(key.upper())
 
     def load_audio(self, file, bind: bool = False):
         """
         Cargar audio
         """
         if KEYBOARD_MODE:
-            self.audio_file = SoundLoader.load(self.get_path_resources("audio", file))
+            self.audio_file = SoundLoader.load(
+                self.get_path_resources("audio", file))
             if bind:
                 self.audio_file.bind(on_stop=self.do_after_stop_audio)
             else:
@@ -259,7 +217,6 @@ class MIABYApp(App):
         if KEYBOARD_MODE:
             if self.audio_file:
                 self.audio_file.play()
-            
 
     def stop_audio(self):
         """
@@ -281,10 +238,10 @@ class MIABYApp(App):
         """
         current_screen = self.sm.current_screen.name
         if self.audio_file and current_screen == "modo_juego":
-            if self.current_option_mode == "observar" or self.current_option_mode=="aprender":
+            if self.option_game_mode == "observar" or self.option_game_mode == "aprender":
                 self.sm.current = "video"
                 self.audio_file.unload()
-            elif self.current_option_mode == "interactuar":
+            elif self.option_game_mode == "interactuar":
                 self.sm.current = "lectura_tarjeta"
                 self.audio_file.unload()
 
@@ -292,26 +249,26 @@ class MIABYApp(App):
         """
         Lectura de la coordenada según la fila leída.
         """
-        GPIO.output(fila, GPIO.HIGH)  
+        GPIO.output(fila, GPIO.HIGH)
         coordenada = 0
         for pin in Columnas:
             if bool(GPIO.input(pin)):
                 self.manage_screens(key=caracteres[coordenada])
                 time.sleep(0.3)
-            coordenada+=1
-        GPIO.output(fila,GPIO.LOW)
+            coordenada += 1
+        GPIO.output(fila, GPIO.LOW)
 
-    def read_keayboard(self, *args):
+    def read_keyboard(self, *args):
         key_map = (
             ("A", "B", "C", "D", "E", "F", "G", "up"),
-        ("H", "I", "J", "K", "L", "M", "N", "down"),
-        ("O", "P", "Q", "R", "S", "T", "Ñ", "enter"),
-        ("left","U", "V", "W", "X", "Y", "Z", "right")
+            ("H", "I", "J", "K", "L", "M", "N", "down"),
+            ("O", "P", "Q", "R", "S", "T", "Ñ", "enter"),
+            ("left", "U", "V", "W", "X", "Y", "Z", "right")
         )
         arrow_keys = 0
         for fila in Filas:
             self.read_coordinate(fila, key_map[arrow_keys])
-            arrow_keys+=1
+            arrow_keys += 1
 
     def _keyboard_closed(self):
         """

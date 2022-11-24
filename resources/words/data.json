@@ -1,5 +1,5 @@
 {
-    "español":{
+    "spanish":{
         "1":"CUADRADO",
         "2":"TRIANGULO",
         "3":"CIRCULO",
@@ -29,7 +29,7 @@
         "27":"OCHO",
         "28":"NUEVE"
     },
-    "ingles":{
+    "english":{
         "1":"SQUARE",
         "2":"TRIANGLE",
         "3":"CIRCLE",

@@ -1,0 +1,21 @@
+#:kivy 1.0
+<IngresarTextoScreen>:
+    background: bcg
+    input_text: entry
+    FloatLayout:
+        Image:
+            id:bcg
+            source: app.get_path_resources('español','introducir_palabra.png')
+            pos: self.pos
+            size: self.size
+        TextInput:
+            id:entry
+            text:""
+            size_hint: .6, .27
+            pos_hint: {'x': .34, 'y': .35}
+            multiline:False
+            disabled:True
+            font_size:80
+            disabled_foreground_color:0,0,0,1
+            background_color:0,0,0,0
+            
