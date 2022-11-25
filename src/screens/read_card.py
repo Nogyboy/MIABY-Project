@@ -24,23 +24,22 @@ class ReadCardScreen(Screen):
         self.img_read = Image(source=self.app.get_path_resources("images","read_card.png"), pos=self.pos, size=self.size)
         self.add_widget(self.img_read)   
 
-    def update_background_image(self, lang):
+    def update_background_image(self):
         """
-        Actualiza la imagen de fondo en función del idioma.
+        Update background image.
         """
-        self.img_read.source = self.app.get_path_resources(lang,"read_card.png")
+        self.img_read.source = self.app.get_path_resources("images", "read_card.png")
         self.img_read.reload()
 
     def select_word(self, code):
         """
-        Asigna la palabra según el idioma para luego
-        ser deletreada.
+        Set word to be compared with the input.
         """
         self.app.word_selected = self.app.words[str(code)]
         
     def update_time_read_card(self, sec):
         """
-        Contador de tiempo de lectura de tarjeta.
+        Time counter for read the card.
         """
         self.secs = self.secs+1
         id, text = self.reader.read_no_block()
@@ -48,7 +47,7 @@ class ReadCardScreen(Screen):
             try:
                 self.event.cancel()
             except AttributeError:
-                print("No existe la instancia...")
+                print("No instance...")
             self.secs = 0
             self.app.sm.current = "game_mode"
 
@@ -61,10 +60,10 @@ class ReadCardScreen(Screen):
 
     def on_enter(self, *args):
         """
-        Al entrar reproducir el audio e iniciar la lectura de la tarjeta
+        Play audio and start reading the card.
         """
 
-        self.app.load_audio("7.wav")
+        self.app.load_audio("1.wav")
         self.app.play_audio()
         if self.app.config_mode == "board":
             self.event = Clock.schedule_interval(self.update_time_read_card, 0.5)

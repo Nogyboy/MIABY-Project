@@ -173,7 +173,7 @@ class MIABYApp(App):
                     self.option_game_mode = self.modo_option[0] if pos > 2 else self.modo_option[pos]
 
                 self.game_mode_screen.update_image_buttons_mode(
-                    self.option_game_mode, self.lang_option)
+                    self.option_game_mode)
 
         elif key == "enter":
             if current_screen == "welcome":
@@ -183,11 +183,10 @@ class MIABYApp(App):
                 self.home_screen.choose_language(lang=self.lang_option)
 
                 self.game_mode_screen.update_image_buttons_mode(
-                    self.option_game_mode, self.lang_option)
-                self.read_card_screen.update_background_image(self.lang_option)
-                self.text_input_screen.update_background_image(
-                    self.lang_option)
-                self.message_screen.update_image(self.lang_option)
+                    self.option_game_mode)
+                self.read_card_screen.update_background_image()
+                self.text_input_screen.update_background_image()
+                self.message_screen.update_image()
 
                 self.sm.current = "game_mode"
 

@@ -15,18 +15,18 @@ class TextInputScreen(Screen):
         super().__init__(**kw)
         self.app = App.get_running_app()
 
-    def update_background_image(self, lang):
+    def update_background_image(self):
         """
-        Actualiza la imagen de fondo en función del idioma.
+        Update background image.
         """
-        self.background.source = self.app.get_path_resources(lang, "introducir_palabra.png")
+        self.background.source = self.app.get_path_resources("images", "word_input.png")
 
         self.background.reload()
 
     
     def validate_word_entry(self, letter):
         """
-        Ingresa y valida la letra de la palabra elegida.
+        Validate the input letter with the selected word.
         """
         
         actual_words = len(self.input_text.text)
@@ -34,17 +34,17 @@ class TextInputScreen(Screen):
             if letter == self.app.word_selected[actual_words]:
                 self.input_text.text = self.input_text.text + letter
                 if self.input_text.text == self.app.word_selected:
-                    self.app.sm.current = "mensaje"
+                    self.app.sm.current = "message"
                     self.input_text.text = ""
             else:
                 pass
         except IndexError:
-            print("Palabra terminada.")
+            print("Word complete.")
 
     
     def on_enter(self, *args):
         try:
-            self.app.load_audio("8.wav")
+            self.app.load_audio("1.wav")
             self.app.play_audio()
         except AttributeError:
             self.on_enter()

@@ -22,24 +22,24 @@ class MessageScreen(Screen, FloatLayout):
 
     def update_time(self, sec):
         """
-        Contador de tiempo de visualización del mensaje.
+        Timer to see the message.
         """
         self.secs = self.secs+1
         if self.secs == 5:
             self.event.cancel()
             self.secs = 0
-            self.app.sm.current = "lectura_tarjeta"
+            self.app.sm.current = "read_card"
 
     def on_enter(self):
         """
-        Inicio del contador y la animación.
+        Start timer.
         """
         self.event = Clock.schedule_interval(self.update_time, 1)
 
-    def update_image(self, lang):
+    def update_image(self):
         """
         Update background image.
         """
         self.image_message.source = self.app.get_path_resources(
-            lang, "message.png")
+            "images", "message.png")
         self.image_message.reload()
