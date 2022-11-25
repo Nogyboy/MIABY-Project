@@ -1,32 +1,32 @@
 #:kivy 1.0
-<ModoJuegoScreen>:
-    observar_boton: obs_btn
-    aprender_boton: apr_btn
-    interactuar_boton: int_btn
+<GameModeScreen>:
+    observe_button: obs_btn
+    learning_button: apr_btn
+    interact_button: int_btn
     background:bcg
     FloatLayout:
         Image:
             id:bcg
-            source: app.get_path_resources('español','modo_juego.png')
+            source: app.get_path_resources('images','game_mode.png')
             pos: self.pos
             size: self.size
         Image:
             id:obs_btn
-            source:app.get_path_resources('español','boton_observar_down.png')
+            source:app.get_path_resources('images','button_observe_down.png')
             size_hint: .29, .18
             pos_hint: {'x': .65, 'y': .55}
             border:5,5,5,5
  
         Image:
             id:apr_btn
-            source:app.get_path_resources('español','boton_aprender_normal.png')
+            source:app.get_path_resources('images','button_learning_normal.png')
             size_hint: .29, .18
             pos_hint: {'x': .65, 'y': .35}
             border:5,5,5,5
         
         Image:
             id:int_btn
-            source:app.get_path_resources('español','boton_interactuar_normal.png')
+            source:app.get_path_resources('images','button_interact_normal.png')
             size_hint: .29, .18
             pos_hint: {'x': .65, 'y': .15}
             border:5,5,5,5

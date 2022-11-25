@@ -136,7 +136,7 @@ class MIABYApp(App):
         for j in range(8):
             GPIO.setup(self.columns[j], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-    def get_path_resources(self, res_type, file):
+    def get_path_resources(self, res_type, file, lang_opt=""):
         """
         Get paths for resources.
         """
@@ -145,6 +145,7 @@ class MIABYApp(App):
             "audio": str(BASE_DIR.joinpath('resources', 'audios').joinpath(self.lang_option, file)),
             "video": str(BASE_DIR.joinpath('resources', 'videos').joinpath(file)),
             "images": str(BASE_DIR.joinpath('resources', 'img').joinpath(self.lang_option, file)),
+            "images_config" : str(BASE_DIR.joinpath('resources', 'img').joinpath(lang_opt, file)),
             "common": str(BASE_DIR.joinpath('resources', 'img').joinpath("common", file))
         }
 

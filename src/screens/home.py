@@ -36,11 +36,11 @@ class HomeScreen(Screen):
         Update image button base on its state.
         """
         if option == "spanish":
-            self.esp_button.source = self.app.get_path_resources("button_esp_down.png")
-            self.en_button.source = self.app.get_path_resources("button_ingles_normal.png")
+            self.esp_button.source = self.app.get_path_resources("images_config","button_spanish_down.png", lang_opt="spanish")
+            self.en_button.source = self.app.get_path_resources("images_config","button_english_normal.png", lang_opt="english")
         elif option == "english":
-            self.esp_button.source = self.app.get_path_resources("button_esp_normal.png")
-            self.en_button.source = self.app.get_path_resources("button_ingles_down.png")
+            self.esp_button.source = self.app.get_path_resources("images_config","button_spanish_normal.png", lang_opt="spanish")
+            self.en_button.source = self.app.get_path_resources("images_config","button_english_down.png", lang_opt="english")
 
         self.esp_button.reload()
         self.en_button.reload()
@@ -53,7 +53,7 @@ class HomeScreen(Screen):
         if self.secs == 120:
             self.event.cancel()
             self.secs = 0
-            self.app.sm.current = "inactividad"
+            self.app.sm.current = "inactivity"
 
     def on_enter(self, *args):
         try:
