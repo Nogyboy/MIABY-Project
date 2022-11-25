@@ -1,4 +1,3 @@
-from inspect import Attribute
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.app import App
@@ -8,13 +7,13 @@ from kivy.clock import Clock
 import json
 
 
-Builder.load_file('src/screens/inicio.kv')
+Builder.load_file('src/screens/home.kv')
 
 
-class InicioScreen(Screen):
+class HomeScreen(Screen):
 
-    esp_boton = ObjectProperty(None)
-    en_boton = ObjectProperty(None)
+    esp_button = ObjectProperty(None)
+    en_button = ObjectProperty(None)
     event = None
     secs = 0
     
@@ -25,8 +24,7 @@ class InicioScreen(Screen):
 
     def choose_language(self, lang):
         """
-        Selección de idioma, se almacena en la variable idioma de la clase
-        MIABYApp.
+        Load words from JSON File.
         """
         path_json_words = self.app.get_path_resources("words","data.json")
 
@@ -35,22 +33,17 @@ class InicioScreen(Screen):
 
     def update_image_buttons_language(self, option):
         """
-        Actualiza la imagen del botón en función de la
-        opción que se encuentre actualmente seleccionada.
+        Update image button base on its state.
         """
-        if option == "español":
-            self.esp_boton.source = self.app.get_path_resources(
-                "español", "boton_esp_down.png")
-            self.en_boton.source = self.app.get_path_resources(
-                "ingles", "boton_ingles_normal.png")
-        elif option == "ingles":
-            self.esp_boton.source = self.app.get_path_resources(
-                "español", "boton_esp_normal.png")
-            self.en_boton.source = self.app.get_path_resources(
-                "ingles", "boton_ingles_down.png")
+        if option == "spanish":
+            self.esp_button.source = self.app.get_path_resources("button_esp_down.png")
+            self.en_button.source = self.app.get_path_resources("button_ingles_normal.png")
+        elif option == "english":
+            self.esp_button.source = self.app.get_path_resources("button_esp_normal.png")
+            self.en_button.source = self.app.get_path_resources("button_ingles_down.png")
 
-        self.esp_boton.reload()
-        self.en_boton.reload()
+        self.esp_button.reload()
+        self.en_button.reload()
 
     def update_time(self, sec):
         """

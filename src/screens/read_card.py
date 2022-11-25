@@ -2,35 +2,34 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.app import App
 from kivy.uix.image import Image
-
-from src.screens import READ_CAR_MODE
-
-if READ_CAR_MODE:
-    from mfrc522 import SimpleMFRC522
 from kivy.clock import Clock
 
-Builder.load_file('src/screens/lectura_tarjeta.kv')
+Builder.load_file('src/screens/read_card.kv')
+
+DESKTOP_MODE = False
+
+if DESKTOP_MODE:
+    from mfrc522 import SimpleMFRC522
+    reader = SimpleMFRC522()
 
 
-class LecturaTarjetaScreen(Screen):
+class ReadCardScreen(Screen):
     
-    if READ_CAR_MODE:
-        reader = SimpleMFRC522()
     secs = 0
     event = None
 
     def __init__(self, **kw):
         super().__init__(**kw)
         self.app = App.get_running_app()
-        self.img_lectura = Image(source=self.app.get_path_resources("español","leer_tarjeta.png"), pos=self.pos, size=self.size)
-        self.add_widget(self.img_lectura)   
+        self.img_read = Image(source=self.app.get_path_resources("images","read_card.png"), pos=self.pos, size=self.size)
+        self.add_widget(self.img_read)   
 
     def update_background_image(self, lang):
         """
         Actualiza la imagen de fondo en función del idioma.
         """
-        self.img_lectura.source = self.app.get_path_resources(lang,"leer_tarjeta.png")
-        self.img_lectura.reload()
+        self.img_read.source = self.app.get_path_resources(lang,"read_card.png")
+        self.img_read.reload()
 
     def select_word(self, code):
         """
@@ -51,13 +50,13 @@ class LecturaTarjetaScreen(Screen):
             except AttributeError:
                 print("No existe la instancia...")
             self.secs = 0
-            self.app.sm.current = "modo_juego"
+            self.app.sm.current = "game_mode"
 
         elif id != None:
             self.event.cancel()
             self.secs = 0
             self.select_word(int(text))
-            self.app.sm.current = "ingresar_texto"
+            self.app.sm.current = "text_input"
 
 
     def on_enter(self, *args):
@@ -67,11 +66,11 @@ class LecturaTarjetaScreen(Screen):
 
         self.app.load_audio("7.wav")
         self.app.play_audio()
-        if READ_CAR_MODE:
+        if self.app.config_mode == "board":
             self.event = Clock.schedule_interval(self.update_time_read_card, 0.5)
         else:
             self.select_word(1)
-            self.app.sm.current = "ingresar_texto"
+            self.app.sm.current = "text_input"
 
         
         return super().on_enter(*args)

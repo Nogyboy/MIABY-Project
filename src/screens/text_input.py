@@ -3,10 +3,10 @@ from kivy.uix.screenmanager import Screen
 from kivy.app import App
 from kivy.properties import (ObjectProperty)
 
-Builder.load_file('src/screens/ingresar_texto.kv')
+Builder.load_file('src/screens/text_input.kv')
 
 
-class IngresarTextoScreen(Screen):
+class TextInputScreen(Screen):
 
     background = ObjectProperty(None)
     input_text = ObjectProperty(None)
