@@ -107,7 +107,7 @@ class MIABYApp(App):
         self.sm.add_widget(self.screensaver_screen)
 
         self.sm.current = "welcome"  # First screen
-        print(self.get_application_config())
+
         self.config_mode = self.config.get('extras', 'mode_app')
         self.config.set('graphics', 'fullscreen','auto')
         if self.config_mode == "board":
@@ -142,12 +142,14 @@ class MIABYApp(App):
         """
         paths = {
             "words": str(BASE_DIR.joinpath("resources", "words", file)),
-            "audio": str(BASE_DIR.joinpath('resources', 'audios').joinpath(self.lang_option, file)),
+            "audio": str(BASE_DIR.joinpath('resources', 'audios').joinpath(file)),
             "video": str(BASE_DIR.joinpath('resources', 'videos').joinpath(file)),
             "images": str(BASE_DIR.joinpath('resources', 'img').joinpath(self.lang_option, file)),
             "images_config" : str(BASE_DIR.joinpath('resources', 'img').joinpath(lang_opt, file)),
             "common": str(BASE_DIR.joinpath('resources', 'img').joinpath("common", file))
         }
+        if res_type == "videos":
+            print(str(BASE_DIR.joinpath('resources', 'videos').joinpath(file)))
 
         return paths[res_type]
 
@@ -223,13 +225,17 @@ class MIABYApp(App):
                 except AttributeError:
                     print("Too fast the screen hasn't created.")
                 self.sm.current = "game_mode"
+
             elif current_screen == "text_input":
-                self.sm.current = "read_card"
+                if self.config_mode == "desktop":
+                    self.sm.current = "game_mode"
+                else:
+                    self.sm.current = "read_card"
             elif current_screen == "show_video":
                 self.sm.current = "game_mode"
 
         elif key == "right":
-            if current_screen == "video":
+            if current_screen == "show_video":
                 self.show_video_screen.video.state = "pause"
         else:
             if current_screen == "text_input":
@@ -274,7 +280,7 @@ class MIABYApp(App):
         current_screen = self.sm.current_screen.name
         if self.audio_file and current_screen == "game_mode":
             if self.option_game_mode == "observe" or self.option_game_mode == "learning":
-                self.sm.current = "video"
+                self.sm.current = "show_video"
                 self.audio_file.unload()
             elif self.option_game_mode == "interact":
                 self.sm.current = "read_card"
